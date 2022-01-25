@@ -1,0 +1,23 @@
+{
+  "name": "learn-express",
+  "version": "0.0.1",
+  "description": "익스프레스를 배우자",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon app"
+  },
+  "author": "heomin",
+  "license": "MIT",
+  "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^14.2.0",
+    "express": "^4.17.2",
+    "express-session": "^1.17.2",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.4",
+    "pug": "^3.0.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
