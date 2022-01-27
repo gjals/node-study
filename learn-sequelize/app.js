@@ -21,25 +21,34 @@ sequelize.sync({force: false})
         console.log(err);
     });
 
+    
+
+
+
 app.use(morgan('dev'));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')));    //얘랑 밑에 use 2개랑 순서를 뒤바꾸면 라우터가 없습니다 에러가 남
+//얘가 실행되면 폴더에 파일과 연결되기 때문에 저 에러가 안난듯 
+//https://stackoverflow.com/questions/38020349/node-express-4-middleware-not-working 참고
 app.use(express.json);
 app.use(express.urlencoded({ extended:false}));
 
 app.use((req, res, next) => {
-    const error= new Error(`${req.method} ${erq.url} 라우터가 없습니다`);
+    const error= new Error(`${req.method} ${req.url} 라우터가 없습니다`);
     error.status= 404;
+    console.log(error.status);
     next(error);
 })
 
 app.use((err, req, res, next) => {
+    console.log('aasdf');
     res.locals.message= err.message;
-    res.locals.error= proces.env.NODE_ENV !== 'production'? err : {};
+    res.locals.error= process.env.NODE_ENV !== 'production'? err : {};
     res.status(err.status || 500);
     res.render('error');
+    
 });
 
-app.listen(app.get('port'), ()=> {
-    console.log(app.get('port'), '빈 포트 대기중');
+app.listen(3001, ()=> {
+    console.log(3001, '빈 포트 대기중');
 })
 
