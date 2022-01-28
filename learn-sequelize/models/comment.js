@@ -7,7 +7,7 @@ module.exports= class Comment extends Sequelize.Model {
                 type: Sequelize.STRING(100),
                 allowNull: false,
             },
-            create_at: {
+            created_at: {
                 type: Sequelize.DATE,
                 allowNull: false,
                 defaultValue: Sequelize.NOW,
@@ -20,11 +20,13 @@ module.exports= class Comment extends Sequelize.Model {
             tableNAme: 'comments',
             paranoid: false,
             charset:'utf8mb4',
-            collate: 'utf8m64_general_ci',
+            collate: 'utf8mb4_general_ci',
         });
     }
 
     static assosiate(db) {
-        db.Comment.belongsTo(db.Users, {foreignKey: 'commenter', targetKey: 'id'});
+        db.Comment.belongsTo(db.User, {foreignKey: 'commenter', targetKey: 'id'});
     }
+
+
 };
