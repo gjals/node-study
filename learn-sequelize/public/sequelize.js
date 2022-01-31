@@ -1,7 +1,9 @@
+const e = require("express");
+
 document.querySelectorAll('#user-list tr').forEach((el)=>{ 
     el.addEventListener('click', function() {
         const id= el.querySelector('td').textContent;
-        getComment(id);
+        getComment(id); 
     });
 });
 
@@ -26,7 +28,7 @@ async function getComment(id) {
             td.textContent= comment.comment; 
             row.appendChild(td);
 
-            const edit= document.createElement('button');
+            const edit= document.createElement('button'); //수정버튼 
             edit.textContent= '수정';
             edit.addEventListener('click', async () => {
                 const newComment= prompt('바꿀 내용을 입력하세요');
@@ -35,16 +37,50 @@ async function getComment(id) {
                 }
                 try {
                     await axios.patch(`/comments/${comment.id}`, { comment: newComment }); //객체로 수정? 왜 객체로 이렇게 해주나?
-                    getComment(id); //다시 호출해서 다시 로딩하는 듯
+                    getComment(id); //다시 호출해서 다시 로딩하는 건가? 무한루프에 빠지지 않을까?
+                    //이렇게 함수를 호출하면 이 함수는 다른 함수가 끝날 때까지 기다리려나?
+
                 } catch (err) {
                     console.error(err);
                 }
             });
 
-        })
+            const remove= document.createElement('button'); //삭제, 위의 수정과 거의 동일
+            edit.textContent= '삭제';
+            edit.addEventListener('click', async () => {
+                try {
+                    await axios.delete(`/comments/${comment.id}`);
+                    getComment(id);
+                } catch (err) {
+                    console.err(err);
+                }
+            });
 
+            td= document.createElement('td');
+            td.appendChild(edit);
+            row.appendChild(td);
+
+            td= document.createElement('td');
+            td.appendChild(remove);
+            row.appendChild(td);
+            tbody.appendChild(row);
+        });
     }
     catch (err) {
         console.log(err);
     }
 }
+
+document.getElementById('user-form').addEventListener('submit', async (e)=> {
+    e.preventDefault;
+    const name= e.target.username.value; //왜 .target을 하는지 왜 .value를 하는지 checked를 하는지. 보낸 함수 살피기
+    const age= e.target.age.value;
+    const married= e.target.married.checked; //그냥 {name:username.value, age.., married..}= e.target; 안되나?
+
+    if(!name) {
+        return alert('이름을 입력하세요'); //그냥 이대로 함수 종료
+    }
+    if(!age) {
+        return alert('나이를 입력하세요');
+    }
+})

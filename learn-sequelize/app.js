@@ -23,9 +23,6 @@ sequelize.sync({force: false})
 
     
 
-
-
-
 app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname, 'public')));    //얘랑 밑에 use 2개랑 순서를 뒤바꾸면 라우터가 없습니다 에러가 남
 //얘가 실행되면 폴더에 파일과 연결되기 때문에 저 에러가 안난듯 
