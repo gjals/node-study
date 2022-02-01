@@ -39,7 +39,7 @@ async function getComment(id) {
                     await axios.patch(`/comments/${comment.id}`, { comment: newComment }); //객체로 수정? 왜 객체로 이렇게 해주나?
                     getComment(id); //다시 호출해서 다시 로딩하는 건가? 무한루프에 빠지지 않을까?
                     //이렇게 함수를 호출하면 이 함수는 다른 함수가 끝날 때까지 기다리려나?
-
+                    //return getComment(id) 써야하지 않을까,,?
                 } catch (err) {
                     console.error(err);
                 }
@@ -83,4 +83,37 @@ document.getElementById('user-form').addEventListener('submit', async (e)=> {
     if(!age) {
         return alert('나이를 입력하세요');
     }
+    try {
+        await axios.post('/users', {name, age, married} );
+        getUser();
+    }
+    catch (err) {
+        console.error(err);
+    }
+
+    e.target.username.value= '';
+    e.target.age.value= '';
+    e.target.married.checked= false;
+})
+
+document.getElementById('comment-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const id= e.target.userid.value;
+    const comment= e.target.comment.value;
+    if(!id) {
+        return alert('아이디를 입력하세요');
+    }
+    if(!comment) {
+        return alert('댓글을 입력하세요');
+    }
+    try {
+        axios.post('/comments', {id, comment});
+        getComment();
+    }
+    catch (err) {
+        console.error(err);
+    }
+
+    e.target.userid.value= ''; //다시 리셋
+    e.target.comment.value= '';
 })

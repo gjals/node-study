@@ -3,7 +3,11 @@ const path= require('path');
 const morgan= require('morgan');
 const nunjucks= require('nunjucks');
 
-const { sequelize, User } = require('./models');
+const { sequelize } = require('./models');
+
+const indexRouter= require('./routes');
+const usersRouter= require('./routes/users');
+const commentsRouter= require('./routes/comments'); //순서 바뀌어도 가능?
 
 const app= express();
 app.set('port', process.env.PORT || 3001);
@@ -29,6 +33,10 @@ app.use(express.static(path.join(__dirname, 'public')));    //얘랑 밑에 use 
 //https://stackoverflow.com/questions/38020349/node-express-4-middleware-not-working 참고
 app.use(express.json);
 app.use(express.urlencoded({ extended:false}));
+
+app.use('/', indexRouter);
+app.use('/users', usersRouter);
+app.use('/comments', commentsRouter); //순서바뀌어도 ㄱㄴ?
 
 // (async function() {      
 //     try {
