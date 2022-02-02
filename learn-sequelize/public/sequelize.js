@@ -74,7 +74,7 @@ async function getComment(id) {
 document.getElementById('user-form').addEventListener('submit', async (e)=> {
     e.preventDefault;
     const name= e.target.username.value; //왜 .target을 하는지 왜 .value를 하는지 checked를 하는지. 보낸 함수 살피기
-    const age= e.target.age.value;
+    const age= e.target.age.value; // -> target은 이벤트가 발생한 대상 객체를 가리킵니다.
     const married= e.target.married.checked; //그냥 {name:username.value, age.., married..}= e.target; 안되나?
 
     if(!name) {
