@@ -3,8 +3,9 @@ const User= require('../models/user');
 const router= express.Router();
 
 router.get('/', async (req, res, next) => {
-    try{
-        const users= await User.findAll;
+    try {
+        const users= await User.findAll();
+        console.log('rendering 전까지 옴!');
         res.render('sequelize',{ users }); //렌더링..
     }
     catch (err) {
