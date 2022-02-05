@@ -1,0 +1,23 @@
+<html>
+<head>
+    <title>res.render() Demo</title>
+</head>
+<body>
+    <h2>Render Function Demo</h2>
+    <form id="new-form">
+        <input id="mood" type="text" placeholder="기분">
+        <button type="submit">입력</button>
+    </form>
+    <table id="mood_list">
+        <% moods.forEach(function(mood) { %>
+            <tr>
+                <td><%= mood.id %></td>
+                <td><%= mood.comment %></td>
+            </tr>
+        <% }); %>
+        <!--extension에서 ejs 설치하자,,! -->
+    </table>
+    <script src="/index3.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</body>
+</html>
