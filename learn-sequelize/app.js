@@ -6,8 +6,8 @@ const nunjucks= require('nunjucks');
 const { sequelize } = require('./models');
 
 const indexRouter= require('./routes/index');
-//const usersRouter= require('./routes/users');
-//const commentsRouter= require('./routes/comments'); //순서 바뀌어도 가능?
+const usersRouter= require('./routes/users');
+const commentsRouter= require('./routes/comments'); //순서 바뀌어도 가능?
 
 const app= express();
 app.set('port', process.env.PORT || 3001);
@@ -32,9 +32,9 @@ app.use(express.static(path.join(__dirname, 'public')));    //얘랑 밑에 use 
 app.use(express.json()); //json 뒤에 () 안붙여서 하루종일 에러찾음 ㅅㄱ
 app.use(express.urlencoded({ extended: false}));
 
-app.use('/', indexRouter, () => {console.log('use 실행됨!')});
-//app.use('/users', usersRouter);
-//app.use('/comments', commentsRouter); //순서바뀌어도 ㄱㄴ?
+app.use('/', indexRouter);
+app.use('/users', usersRouter);
+app.use('/comments', commentsRouter); //순서바뀌어도 ㄱㄴ?
 
 app.use((req, res, next) => {
     const error= new Error(`${req.method} ${req.url} 라우터가 없습니다`);

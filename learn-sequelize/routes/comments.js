@@ -8,7 +8,7 @@ router.post('/', async (req, res, next) => {
             commenter: req.body.id,
             comment: req.body.comment,
         });
-        console.log(comment);
+        await console.log(comment,'routes/comment실행');
         res.status(201).json(comment);
     } catch (err) {
         console.error(err);
@@ -28,7 +28,7 @@ router.route('/:id')
     })
     .delete(async (req, res, next) => {
         try {
-            const result= await Comment.destroy({where:{id:req.body.id}});
+            const result= await Comment.destroy({where:{id:req.params.id}});
             res.json(result);
         } catch (err) {
             console.log(err);
