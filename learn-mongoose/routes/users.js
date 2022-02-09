@@ -30,6 +30,7 @@ router.post('/', async (req, res, next)=>{
 router.get('/:id/comments', async (req, res, next)=>{
     try {
         const comments= await Comment.find({commenter: req.params.id}).populate('commenter');
+        console.log(comments);
         res.json(comments);
     } catch (err) {
         console.error(err);

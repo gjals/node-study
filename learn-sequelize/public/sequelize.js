@@ -19,7 +19,7 @@ async function getComment(id) {
             row.appendChild(td);
 
             td= document.createElement('td'); //왜 또 생성? 걍 textContent만 바꾸면 안되나? 한 번 해보기
-            td.textContent= comment.User.name;
+            td.textContent= comment.User.name; //저렇게 다시 만들지 않으면 에러남,,, 한 번 주면 그대로 끝나는 거임 ㅅㄱ
             row.appendChild(td);
 
             td= document.createElement('td');
