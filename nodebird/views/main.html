@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+{% block content %}
+    {% if user %}
+    <div class="post-box">
+        <!--모든 문자를 인코딩하지 않음을 명시 , form이 post일 때 인코딩 방식을 결정-->
+        <form id="post-form" action="/post" method="post" enctype="multipart/form-data">
+            <textarea id="post-text" name="post-text" maxlength="140"></textarea>
+            <label id="post-image-label" for="post-image">사진 업로드</label>
+            <input id="post-image" type="file" accept="image/*">
+            <button id="post-form-button" type="submit">제출</button>
+        </form>
+    </div>
+    {% endif %}
+
+    <div class="post-list-box">
+        <form id="post-search-form" action="/hastag">
+            <input type="text" name="post-search-text" placeholder="포스트 검색">
+            <button type="submit">제출</button>
+        </form>
+        {% for post in posts %}
+        <div>
+            <div class="post-auth">{{ post.User.nick }}</div>
+            <input type="hidden" value="{{ post.User.id" }} id="post-auth-id">
+            {% if not followerIDList.includes(post.User.id) and post.User.id!==user.id %}
+                <button class="post-auth-follow"></button>
+            {% endif %}
+            <div class="post-content">{{ post.content }}</div>
+            {% if post.img %}
+                <img src="{{ post.img }}">
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        //이미지 미리보기 안함, 왜 자기 자신이 아닌지 다시 체크하지? 나중에 지워보자!
+        document.querySelectorAll('.post-auth-follow').forEach((auth)=>{
+            auth.addEventListener('click', ()=>{
+                const myid= document.querySelector('#my-id');
+                if(myid) {
+                    const userid= auth.parentNode.querySelector('#post-auth-id').value;
+                    if(userid!=myid) {
+                        if(confirm('ㄹㅇ할꺼임?')) { //확인, 취소 두 버튼이 뜨고 true, false를 돌려줌 
+                            axios.post(`/user/${userid}/follow`).then(()=>{location.reload();}).catch((err)=>{console.err(err)});
+                        }
+                    }
+                }
+            })
+        })
+    </script>
+{% endblock %}

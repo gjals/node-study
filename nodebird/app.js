@@ -15,7 +15,7 @@ nunjucks.configure('views', {
     watch: true,
 });
 
-app.use(morgan(dev));
+app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json()); // 이 두개는 쓸 때와 안 쓸 때 큰 차이를 모르겠음
 app.use(express.urlencoded({extended: false}));
@@ -36,7 +36,6 @@ app.use((req, res, next) => {
 });
 app.use((err, req, res, next) => {
     res.locals.message= err.message;
-    res.status(err.stats || 500);
     res.render('error');
 });
 

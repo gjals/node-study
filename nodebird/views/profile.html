@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <div class="followings-box">
+        {% if user.Followings %}
+            {% for following in user.Followings %}
+                <div>{{ follwing.nick }}</div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <div class="followers-box">
+        {% if user.Followers %}
+            {% for follower in user.Followers %}
+                <div>{{ follwer.nick }}</div>
+            {% endfor %}
+        {% endif %}
+    </div>
+{% endblock %}

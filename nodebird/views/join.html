@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% block content %}
+    <form class="join-form">
+        <input id="join-email" type="email" name="join-email" placeholder="email">
+        <input id="join-nick" type="text" name="join-text" placeholder="nickname">
+        <input id="join-password" type="password" name="join-password" placeholder="password">
+        <button id="join-form-button" type="submit">submit</button>
+    </form>
+{% endblock %}
+{% block script %}
+    <script>
+        window.onload= () => {
+        if(new URL(locaion.href).searchParams.get('error')) {
+            alert('이미 존재,,?');
+        }
+    };
+    </script>
+{% endblock %}
