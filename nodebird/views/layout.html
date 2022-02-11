@@ -5,16 +5,15 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>메인</title>
-        <link rel="stylesheet" href="/main.css">
     </head>
     <body>
         <div class="total-box">
             <div class="profile-box">
                 {% if user and user.id %}
-                    <div class="profile-name">{{ user.nick 님 }}</div>
-                    <div class="profile-following-count">{{ 팔로잉 follwingCount}}</div>
-                    <div class="profile-follower-count">{{ 팔로워 follwerCount}}</div>
-                    <input id="my-id" type="hidden" value="{{user.id}}"> <!--/auth/왜쓰는지 잘 모르겠음 -->
+                    <div class="profile-name">{{ user.nick+ ' 님' }}</div>
+                    <div class="profile-following-count">{{ '팔로잉 '+ follwingCount}}</div>
+                    <div class="profile-follower-count">{{ '팔로워 '+ follwerCount}}</div>
+                    <input id="my-id" type="hidden" value="{{user.id}}"> 
                     <a id="profile-move" href="/profile">내 프로필</a>
                     <a id="profile-logout" href="/auth/logout">내 프로필</a>
                 {% else %}
@@ -32,6 +31,7 @@
             {% block content %}
             {% endblock %}
         </div>
+
         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
         <script>
             //location.href=> href 는 location 객체에 속해있는 프로퍼티로 현재 접속중인 페이지 정보를 갖고 있습니다. 또한 값을 변경할 수 있는 프로퍼티이기 때문에 다른 페이지로 이동하는데도 사용되고 있습니다.
