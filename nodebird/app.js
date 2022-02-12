@@ -7,11 +7,14 @@ const nunjucks= require('nunjucks');
 const dotenv= require('dotenv');
 dotenv.config(); //이걸 해야 process.env로 쓸 수 있음 안하면 undefied
 const pageRouter= require('./routes/page');
+const authRouter= require('./routes/auth');
 const { sequelize }= require('./models');
 const passport= require('passport');
-passport.config();
+const passportConfig= require('./passport')
+
 
 const app= express();
+passportConfig();
 app.set('port', process.env.PORT || 8001);
 app.set('view engine', 'html');
 nunjucks.configure('views', {
@@ -37,6 +40,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use('/', pageRouter);
+app.use('/auth', authRouter);
 
 app.use((req, res, next) => {
     next(err);

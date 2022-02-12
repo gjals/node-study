@@ -15,7 +15,7 @@
                     <div class="profile-follower-count">{{ '팔로워 '+ follwerCount}}</div>
                     <input id="my-id" type="hidden" value="{{user.id}}"> 
                     <a id="profile-move" href="/profile">내 프로필</a>
-                    <a id="profile-logout" href="/auth/logout">내 프로필</a>
+                    <a id="profile-logout" href="/auth/logout">로그아웃</a>
                 {% else %}
                     <form id="profile-login-form" action="/auth/login" method="post">
                         <label for="email">이메일</label>

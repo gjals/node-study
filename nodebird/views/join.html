@@ -1,9 +1,9 @@
 {% extends "layout.html" %}
 {% block content %}
-    <form class="join-form">
+    <form class="join-form" action="auth/join" method="post">
         <!--The body of a HTTP post is a key/value hash of all the form controls with a name attribute-->
         <input id="join-email" type="email" name="join_email" placeholder="email">
-        <input id="join-nick" type="text" name="join_text" placeholder="nickname">
+        <input id="join-nick" type="text" name="join_nick" placeholder="nickname">
         <input id="join-password" type="password" name="join_password" placeholder="password">
         <button id="join-form-button" type="submit">submit</button>
     </form>

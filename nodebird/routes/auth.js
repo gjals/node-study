@@ -8,18 +8,22 @@ const router= express.Router();
 router.post('/join', isNotLogin, async (req, res, next) => {
     const { join_email: email, join_nick: nick, join_password:password }= req.body;
     try {
-        const diUser= User.findOne({ where: {email: email}});
+        console.log('auth post에 잘 도착');
+        const diUser= await User.findOne({ where: {email: email}});
         if(diUser) {
-            return;
-            //return res.redirect('/join?error=exist');
+            //return;
+            console.log(diUser);
+            return res.redirect('/join?error=exist');
         }
         const hash= await bcrypt.hash(password, 12);
+        console.log(hash);
         await User.create({
             email: email,
-            nick,
+            nick: nick,
             password: hash,
         });
         return res.redirect('/');
+
     } catch (err) {
         console.error(err);
         return next(err);
@@ -27,7 +31,7 @@ router.post('/join', isNotLogin, async (req, res, next) => {
 });
 
 router.post('/login', isNotLogin, (req, res, next) => {
-    passport.authenticate('local', (authError, user, info) => { // user info 인수들은 어떻게 정해진거지?
+    passport.authenticate('local', (authError, user, info) => { 
         if(authError) {
             console.error(authError);
             return next(authError);
@@ -41,12 +45,19 @@ router.post('/login', isNotLogin, (req, res, next) => {
             }
             return res.redirect('/');
         });
-    })(req, res, next); //즉시 실행 느낌
+    })(req, res, next); //즉시 실행 아님
     //const passportMiddleware = passport.authenticate("local", authFn);
     //passportMiddleware(req, res, next);
 });
+
+router.get('/kakao', (req, res, next )=>{console.log('카카오 get 호출됨'); next();}, passport.authenticate('kakao'));
+
+router.get('/kakao/callback', (req, res, next )=>{console.log('카카오 callback 호출됨'); next();}, passport.authenticate('kakao', {
+    failureRedirect: '/',
+}), (req, res) => { console.log('kakao callback 끝'); res.redirect('/');});
+
 //req.login logout 이 메소드는 뭘까,,,
-router.post('/logout', isLogin, (req, res, next) => {
+router.get('/logout', isLogin, (req, res, next) => {
     req.logout();
     req.session.destroy();
     res.redirect('/');

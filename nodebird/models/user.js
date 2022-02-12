@@ -12,8 +12,8 @@ module.exports= class User extends Sequelize.Model{
                 allowNull: false,
             },
             password: {
-                type: Sequelize.STRING(50),
-                allowNull: false,
+                type: Sequelize.STRING(300),
+                allowNull: true,
             },
             emailProvider: { //로컬 로그인인지 카카오 로그인인지
                 type:Sequelize.STRING(10),
