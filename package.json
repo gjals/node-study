@@ -1,9 +1,13 @@
 {
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "express": "^4.17.2",
     "mongoose": "^6.2.0",
     "morgan": "^1.10.0",
-    "nunjucks": "^3.2.3"
+    "nunjucks": "^3.2.3",
+    "passport": "^0.5.2",
+    "passport-kakao": "^1.0.1",
+    "passport-local": "^1.0.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"

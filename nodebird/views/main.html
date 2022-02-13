@@ -5,6 +5,7 @@
         <!--모든 문자를 인코딩하지 않음을 명시 , form이 post일 때 인코딩 방식을 결정-->
         <form id="post-form" action="/post" method="post" enctype="multipart/form-data">
             <textarea id="post-text" name="post-text" maxlength="140"></textarea>
+            <img id="post-image-preview" src="" style="display: none;">
             <label id="post-image-label" for="post-image">사진 업로드</label>
             <input id="post-image" type="file" accept="image/*">
             <button id="post-form-button" type="submit">제출</button>
@@ -35,7 +36,19 @@
 
 {% block script %}
     <script>
-        //이미지 미리보기 안함, 왜 자기 자신이 아닌지 다시 체크하지? 나중에 지워보자!
+        if (document.getElementById('post-image')) {
+            document.getElementById('post-image').addEventListener('change', function(e) {
+                const formData= new formData();
+                console.log(this, this.file, formData);
+                formData.append('img', this.file[0]);
+                axios.post('/post/img', formData)
+                    .then((res) => {
+                        document.getElementById('post-image-preview').src= res.data.url; //post하면 res.json({url:'--'})로 데이터 넣어주니 그걸 갖다 씀
+                        document.getElementById('post-image-preview').style.display= 'inline';
+                    }).catch((err)=>{ console.error(err); });
+            });
+        }
+        //왜 자기 자신이 아닌지 다시 체크하지? 나중에 지워보자!
         document.querySelectorAll('.post-auth-follow').forEach((auth)=>{
             auth.addEventListener('click', ()=>{
                 const myid= document.querySelector('#my-id');
