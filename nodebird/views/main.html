@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends 'layout.html' %}
 {% block content %}
     {% if user %}
     <div class="post-box">
@@ -7,11 +7,12 @@
             <textarea id="post-text" name="post-text" maxlength="140"></textarea>
             <img id="post-image-preview" src="" style="display: none;">
             <label id="post-image-label" for="post-image">사진 업로드</label>
-            <input id="post-image" type="file" accept="image/*">
+            <input id="post-image" type="file" accept="image/*" name="post_image">
             <button id="post-form-button" type="submit">제출</button>
         </form>
     </div>
-    {% endif %}
+
+    {% endif %} 
 
     <div class="post-list-box">
         <form id="post-search-form" action="/hastag">
@@ -20,17 +21,17 @@
         </form>
         {% for post in posts %}
         <div>
-            <div class="post-auth">{{ post.User.nick }}</div>
+            <div class="post-auth">{{ post.User.nick }}</div> 
             <input type="hidden" value="{{ post.User.id" }} id="post-auth-id">
             {% if not followerIDList.includes(post.User.id) and post.User.id!==user.id %}
-                <button class="post-auth-follow"></button>
+                <button class="post-auth-follow">팔로우</button>
             {% endif %}
             <div class="post-content">{{ post.content }}</div>
             {% if post.img %}
                 <img src="{{ post.img }}">
             {% endif %}
         </div>
-        {% endfor %}
+        {% endfor %} 
     </div>
 {% endblock %}
 
@@ -38,9 +39,9 @@
     <script>
         if (document.getElementById('post-image')) {
             document.getElementById('post-image').addEventListener('change', function(e) {
-                const formData= new formData();
-                console.log(this, this.file, formData);
-                formData.append('img', this.file[0]);
+                const formData= new FormData();
+                console.log(this, this.files, formData);
+                formData.append('img', this.files[0]);
                 axios.post('/post/img', formData)
                     .then((res) => {
                         document.getElementById('post-image-preview').src= res.data.url; //post하면 res.json({url:'--'})로 데이터 넣어주니 그걸 갖다 씀
@@ -63,4 +64,4 @@
             })
         })
     </script>
-{% endblock %}
+{% endblock %} 
