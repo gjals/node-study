@@ -4,31 +4,37 @@
     <div class="post-box">
         <!--모든 문자를 인코딩하지 않음을 명시 , form이 post일 때 인코딩 방식을 결정-->
         <form id="post-form" action="/post" method="post" enctype="multipart/form-data">
-            <textarea id="post-text" name="post-text" maxlength="140"></textarea>
-            <img id="post-image-preview" src="" style="display: none;">
+            <textarea id="post-text" name="post_text" maxlength="140"></textarea>
+            <img id="post-image-preview" src="" style="width:100px; height:100px; display: none;">
+            <input type="hidden" id="post-image-url" name= "post_image_url">
             <label id="post-image-label" for="post-image">사진 업로드</label>
-            <input id="post-image" type="file" accept="image/*" name="post_image">
+            <input id="post-image" type="file" accept="image/*">
             <button id="post-form-button" type="submit">제출</button>
         </form>
     </div>
-
     {% endif %} 
 
     <div class="post-list-box">
-        <form id="post-search-form" action="/hastag">
-            <input type="text" name="post-search-text" placeholder="포스트 검색">
+        <form id="post-search-form" action="/hashtag">
+            <input type="text" name="post_search_text" placeholder="포스트 검색">
             <button type="submit">제출</button>
         </form>
         {% for post in posts %}
         <div>
             <div class="post-auth">{{ post.User.nick }}</div> 
-            <input type="hidden" value="{{ post.User.id" }} id="post-auth-id">
+            <input type="hidden" value="{{ post.User.id }}" id="post-auth-id">
             {% if not followerIDList.includes(post.User.id) and post.User.id!==user.id %}
                 <button class="post-auth-follow">팔로우</button>
             {% endif %}
             <div class="post-content">{{ post.content }}</div>
+            {% if post.UserPost.UserId %}
+                <p3 id="post-good" style="cursor:pointer">♥</p3>
+            {% else %}
+                <p3 id="post-good" style="cursor:pointer">♡</p3>
+            {% endif %}
+            <p1 id="post-id" style:"display:none">{{ post.id }}</p1>
             {% if post.img %}
-                <img src="{{ post.img }}">
+                <img src="{{ post.img }}" style="width:100px; height:100px;">
             {% endif %}
         </div>
         {% endfor %} 
@@ -40,11 +46,12 @@
         if (document.getElementById('post-image')) {
             document.getElementById('post-image').addEventListener('change', function(e) {
                 const formData= new FormData();
-                console.log(this, this.files, formData);
+                console.log(this, this.files);
                 formData.append('img', this.files[0]);
                 axios.post('/post/img', formData)
                     .then((res) => {
                         document.getElementById('post-image-preview').src= res.data.url; //post하면 res.json({url:'--'})로 데이터 넣어주니 그걸 갖다 씀
+                        document.getElementById('post-image-url').value= res.data.url;
                         document.getElementById('post-image-preview').style.display= 'inline';
                     }).catch((err)=>{ console.error(err); });
             });
@@ -55,12 +62,26 @@
                 const myid= document.querySelector('#my-id');
                 if(myid) {
                     const userid= auth.parentNode.querySelector('#post-auth-id').value;
-                    if(userid!=myid) {
+                    if(userid!==myid.vaule) {
                         if(confirm('ㄹㅇ할꺼임?')) { //확인, 취소 두 버튼이 뜨고 true, false를 돌려줌 
                             axios.post(`/user/${userid}/follow`).then(()=>{location.reload();}).catch((err)=>{console.err(err)});
                         }
                     }
                 }
+            })
+        })
+
+        document.querySelectorAll('#post-good').forEach((good)=>{
+            good.addEventListener('click', ()=>{
+                const myid= document.querySelector('#my-id');
+                if(myid) {
+                    const postid= document.getElementById('post-id').value;
+                    alert(postid);
+                    axios.post(`/user/good`, { postid })
+                        .then((res)=>{
+                            location.reload(true);
+                        })
+                        .catch((err)=>{console.err(err)});
             })
         })
     </script>

@@ -11,7 +11,8 @@ const authRouter= require('./routes/auth');
 const { sequelize }= require('./models');
 const passport= require('passport');
 const passportConfig= require('./passport')
-
+const postRouter= require('./routes/post');
+const userRouter= require('./routes/user');
 
 const app= express();
 passportConfig();
@@ -25,6 +26,7 @@ sequelize.sync({force:false}).then(()=>{console.log('연결 성공');}).catch((e
 
 app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/img', express.static(path.join(__dirname, 'uploads')));
 app.use(express.json()); // 이 두개는 쓸 때와 안 쓸 때 큰 차이를 모르겠음
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser(process.env.COOKIE_SECRET));
@@ -41,7 +43,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use('/', pageRouter);
 app.use('/auth', authRouter);
-
+app.use('/user', userRouter);
+app.use('/post', postRouter);
 app.use((req, res, next) => {
     next(err);
 });

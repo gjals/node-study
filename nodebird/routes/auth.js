@@ -31,6 +31,7 @@ router.post('/join', isNotLogin, async (req, res, next) => {
 });
 
 router.post('/login', isNotLogin, (req, res, next) => {
+    console.log('auth/login 도착');
     passport.authenticate('local', (authError, user, info) => { 
         if(authError) {
             console.error(authError);
@@ -43,6 +44,7 @@ router.post('/login', isNotLogin, (req, res, next) => {
             if(loginError) {
                 return next(loginError); 
             }
+            console.log('login 되고 리다이렉트만 되면 됨!');
             return res.redirect('/');
         });
     })(req, res, next); //즉시 실행 아님
