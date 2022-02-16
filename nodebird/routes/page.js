@@ -3,6 +3,7 @@ const router= express.Router();
 const { Post, User, Hashtag }= require('../models')
 const { isLogin, isNotLogin }= require('./middlewares');
 const db= require('../models/index');
+const { hash } = require('bcrypt');
 
 router.use((req, res, next) => {
     res.locals.user= req.user;
@@ -24,18 +25,17 @@ router.get('/join', isNotLogin, (req, res) => {
 
 router.get('/', async (req, res, next) => {
     try {
-        const UserPost= db.sequelize.models.UserPost;
+        //const UserPost= db.sequelize.models.UserPost;
         const posts= await Post.findAll({
             include: {
                 model: User, //그래서 post.User 이렇게 쓰는 건가?
                 attributes: ['id', 'nick'],
             },
-            include: {
-                model: UserPost,
-                attributes: ['UserId'],
-            },
             order:[[ 'createdAt', 'DESC']],
         });
+        //const good_users= await posts.map(post=>post.getUsers());
+        //console.log(good_users);
+
         console.log('get / render before');
         res.render('main', { posts });
         console.log('get / render end!');
@@ -63,7 +63,6 @@ router.get('/hashtag', async (req, res, next)=>{
         console.log(err);
         return next(err);
     }
-    
 });
 
 module.exports= router;

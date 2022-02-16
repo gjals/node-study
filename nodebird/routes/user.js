@@ -62,7 +62,7 @@ router.post('/update', isLogin, async (req, res, next)=>{
     }
 });
 
-router.post('/good', isLogin, async (req, res, next)=>{
+/**router.post('/good', isLogin, async (req, res, next)=>{
     try {
         const user= await User.findOne({ where: { id: req.user.id }});
         if(user) {
@@ -98,5 +98,5 @@ router.post('/good', isLogin, async (req, res, next)=>{
         console.log(err);
         next(err);
     }
-});
+});**/
 module.exports= router;
