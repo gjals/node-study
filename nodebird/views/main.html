@@ -2,7 +2,7 @@
 {% block content %}
     {% if user %}
     <div class="post-box">
-        모든 문자를 인코딩하지 않음을 명시 , form이 post일 때 인코딩 방식을 결정
+        <!--모든 문자를 인코딩하지 않음을 명시 , form이 post일 때 인코딩 방식을 결정-->
         <form id="post-form" action="/post" method="post" enctype="multipart/form-data">
             <textarea id="post-text" name="post_text" maxlength="140"></textarea>
             <img id="post-image-preview" src="" style="width:100px; height:100px; display: none;">
@@ -12,35 +12,30 @@
             <button id="post-form-button" type="submit">제출</button>
         </form>
     </div>
-    {% endif %} 
+    {% endif %}
 
     <div class="post-list-box">
         <form id="post-search-form" action="/hashtag">
             <input type="text" name="post_search_text" placeholder="포스트 검색">
             <button type="submit">제출</button>
         </form>
-        <!--{% for post in posts %}
+    </div>
+        {% for i in range(0, posts.length) %}
         <div>
             {% set post= posts[i] %}
-            {% set good_user= good_users[i] %}
             <div class="post-auth">{{ post.User.nick }}</div> 
             <input type="hidden" value="{{ post.User.id }}" id="post-auth-id">
             {% if not followerIDList.includes(post.User.id) and post.User.id!==user.id %}
                 <button class="post-auth-follow">팔로우</button>
             {% endif %}
             <div class="post-content">{{ post.content }}</div>
-            {% if good_user.includes(user.id) %}
-                <p3 id="post-good" style="cursor:pointer">♥</p3>
-            {% else %}
-                <p3 id="post-good" style="cursor:pointer">♡</p3>
-            {% endif %}
-            <p1 id="post-id" style:"display:none">{{ post.id }}</p1>
+            <p3 id="post-good" style="cursor:pointer">♡</p3>
+            <p1 id="post-id" style:"display: none;">{{ post.id }}</p1>
             {% if post.img %}
                 <img src="{{ post.img }}" style="width:100px; height:100px;">
             {% endif %}
         </div>
-        {% endfor %}-->
-    </div>
+        {% endfor %}
 {% endblock %}
 
 {% block script %}
@@ -72,19 +67,35 @@
                 }
             })
         })
-/**
-        document.querySelectorAll('#post-good').forEach((good)=>{
-            good.addEventListener('click', ()=>{
+
+        window.addEventListener('DOMContentLoaded', function(){ 
+            document.querySelectorAll('#post-good').forEach((postgood)=>{
                 const myid= document.querySelector('#my-id');
                 if(myid) {
-                    const postid= document.getElementById('post-id').value;
-                    alert(postid);
+                    const postid= postgood.parentNode.querySelector('#post-id').textContent;
+                    axios.post(`/user/isgood`, { postid })
+                        .then((res)=>{
+                            if(res.data.isgood==true) {
+                                postgood.textContent= '♥';
+                            }
+                        })
+                        .catch((err)=>{console.err(err)});
+                }
+            })
+        });
+    
+        document.querySelectorAll('#post-good').forEach((postgood)=>{
+            postgood.addEventListener('click', ()=>{
+                const myid= document.querySelector('#my-id');
+                if(myid) {
+                    const postid= postgood.parentNode.querySelector('#post-id').textContent;
                     axios.post(`/user/good`, { postid })
                         .then((res)=>{
                             location.reload(true);
                         })
                         .catch((err)=>{console.err(err)});
+                } 
             })
-        })**/
+        })
     </script>
 {% endblock %} 

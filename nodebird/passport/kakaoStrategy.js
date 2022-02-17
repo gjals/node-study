@@ -19,7 +19,6 @@ module.exports= () => {
                     //차이점은 AND 연산자가 첫 번째 falsy를 반환하는 반면, OR은 첫 번째 truthy를 반환한다는 것입니다.
                     email: (profile._json && profile._json.kakao_account_mail) || 'example@naver.com',
                     /**{"id":2117344019,"connected_at":"2022-02-12T10:36:15Z","properties":{"nickname":"허민"},"kakao_account":{"profile_nickname_needs_agreement":false,"profile":{"nickname":"허민"},"has_email":true,"email_needs_agreement":false,"is_email_valid":true,"is_email_verified":true,"email":"hhuurr1004@naver.com"}} */
-                    //
                     nick: profile.displayName || 'exampleNick', //어디서 온 속성? 이런 속성 존재?
                     snsId: profile.id,
                     emailProvider: 'kakao', //profile.provider 가능?

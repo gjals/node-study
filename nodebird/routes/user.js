@@ -62,15 +62,16 @@ router.post('/update', isLogin, async (req, res, next)=>{
     }
 });
 
-/**router.post('/good', isLogin, async (req, res, next)=>{
+router.post('/good', isLogin, async (req, res, next)=>{
     try {
         const user= await User.findOne({ where: { id: req.user.id }});
+        const postid= parseInt(req.body.postid, 10);
         if(user) {
-            const UserPost= db.sequelize.models.userpost;
+            const UserPost= db.sequelize.models.UserPost;
             const result= await UserPost.findOne({
                 where: {
                     UserId: req.user.id,
-                    PostId: req.body.postid,
+                    PostId: postid,
                 }
             });
             if(result) {
@@ -78,18 +79,18 @@ router.post('/update', isLogin, async (req, res, next)=>{
                 await UserPost.destroy({
                     where: {
                         UserId: req.user.id,
-                        PostId: req.body.postid,
+                        PostId: postid,
                     }
                 });
-                res.json({ bool: false });
+                res.send('a');
             }
             else { 
                 console.log(req.user.id, req.body.postid, '좋아요 없음');
                 await UserPost.create({
                     UserId: req.user.id,
-                    PostId: req.body.postid,
+                    PostId: postid,
                 });
-                res.json({ bool: true });
+                res.send('a');
             }
         } else {
             console.log('not user');
@@ -98,5 +99,32 @@ router.post('/update', isLogin, async (req, res, next)=>{
         console.log(err);
         next(err);
     }
-});**/
+});
+
+router.post('/isgood', isLogin, async (req, res, next)=>{
+    try {
+        const user= await User.findOne({ where: { id: req.user.id }});
+        const postid= parseInt(req.body.postid, 10);
+        console.log('isgood start');
+        if(user) {
+            const UserPost= db.sequelize.models.UserPost;
+            const result= await UserPost.findAll({
+                where: {
+                    PostId: postid,
+                    userId: req.user.id,
+                }
+            });
+            if(result.length===0) {
+                res.send({isgood: false});
+            } else {
+                res.send({isgood: true});
+            }
+        } else {
+            console.log('not user');
+        }
+    } catch (err) {
+        console.log(err);
+        next(err);
+    }
+});
 module.exports= router;
