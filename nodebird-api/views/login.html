@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {% if user and user.id %}
+        <span class="user-name">{{ user.nick }}</span>
+        <a href="/auth/logout"><button>로그아웃</button></a>
+        <fieldset>
+            <legend>도메인 등록</legend>
+            <form action="/domain" method="post">
+                <label for="type-free"></label>
+                <input type="radio" id="type-free" name="type" value="free">
+                <label for="type-premium">프리미엄</label>
+                <input type="radio" id="type-premium" name="type" value="premium">
+                <label for="host">도메인</label>
+                <input type="text" 
+            </form>
+        </fieldset>
+    {% endif %}
+</body>
+</html>

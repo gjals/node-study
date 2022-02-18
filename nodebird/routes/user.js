@@ -1,6 +1,9 @@
 const express= require('express');
 const { isLogin }= require('./middlewares');
-const User= require('../models/user');
+
+const {User,Post,UserPost}=require('../models');
+
+
 const router= express.Router();
 const db= require('../models/index');
 
@@ -64,67 +67,38 @@ router.post('/update', isLogin, async (req, res, next)=>{
 
 router.post('/good', isLogin, async (req, res, next)=>{
     try {
-        const user= await User.findOne({ where: { id: req.user.id }});
-        const postid= parseInt(req.body.postid, 10);
-        if(user) {
-            const UserPost= db.sequelize.models.UserPost;
-            const result= await UserPost.findOne({
-                where: {
-                    UserId: req.user.id,
-                    PostId: postid,
+        const {id,postid}=req.body;
+        console.log(id, postid);
+        const userPostChk= await UserPost.findOne({
+            where:{
+                UserId:id,
+                PostId:postid,
+            }
+        });
+        console.log(userPostChk);
+        if(userPostChk){
+            console.log(1);
+            console.log('===============');
+            await UserPost.destroy({
+                where:{
+                    UserId:id,
+                    PostId:postid
                 }
-            });
-            if(result) {
-                console.log(req.user.id, req.body.postid, '좋아요 있음');
-                await UserPost.destroy({
-                    where: {
-                        UserId: req.user.id,
-                        PostId: postid,
-                    }
-                });
-                res.send('a');
-            }
-            else { 
-                console.log(req.user.id, req.body.postid, '좋아요 없음');
-                await UserPost.create({
-                    UserId: req.user.id,
-                    PostId: postid,
-                });
-                res.send('a');
-            }
-        } else {
-            console.log('not user');
+            })
+        }else{
+            console.log(2);
+            console.log('===============');
+            await UserPost.create({
+                UserId:id,
+                PostId:postid,
+                gg:'1',
+            })
         }
+        return res.json({status:'true'});
     } catch (err) {
         console.log(err);
         next(err);
     }
 });
 
-router.post('/isgood', isLogin, async (req, res, next)=>{
-    try {
-        const user= await User.findOne({ where: { id: req.user.id }});
-        const postid= parseInt(req.body.postid, 10);
-        console.log('isgood start');
-        if(user) {
-            const UserPost= db.sequelize.models.UserPost;
-            const result= await UserPost.findAll({
-                where: {
-                    PostId: postid,
-                    userId: req.user.id,
-                }
-            });
-            if(result.length===0) {
-                res.send({isgood: false});
-            } else {
-                res.send({isgood: true});
-            }
-        } else {
-            console.log('not user');
-        }
-    } catch (err) {
-        console.log(err);
-        next(err);
-    }
-});
 module.exports= router;

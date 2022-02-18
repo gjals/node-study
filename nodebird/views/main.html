@@ -29,8 +29,13 @@
                 <button class="post-auth-follow">팔로우</button>
             {% endif %}
             <div class="post-content">{{ post.content }}</div>
-            <p3 id="post-good" style="cursor:pointer">♡</p3>
-            <p1 id="post-id" style:"display: none;">{{ post.id }}</p1>
+            {% if post.dataValues.good %}
+                <h3 id="post-good" style="cursor:pointer">♥</h3>
+            {% else %}
+                <h3 id="post-good" style="cursor:pointer">♡</h3>
+            {% endif %}
+            <h3 id="post-good-count">{{post.UserPosts.length}}</h3>
+            <h1 id="post-id" style="display: none;">{{ post.id }}</h1>
             {% if post.img %}
                 <img src="{{ post.img }}" style="width:100px; height:100px;">
             {% endif %}
@@ -67,34 +72,16 @@
                 }
             })
         })
-
-        window.addEventListener('DOMContentLoaded', function(){ 
-            document.querySelectorAll('#post-good').forEach((postgood)=>{
-                const myid= document.querySelector('#my-id');
-                if(myid) {
-                    const postid= postgood.parentNode.querySelector('#post-id').textContent;
-                    axios.post(`/user/isgood`, { postid })
-                        .then((res)=>{
-                            if(res.data.isgood==true) {
-                                postgood.textContent= '♥';
-                            }
-                        })
-                        .catch((err)=>{console.err(err)});
-                }
-            })
-        });
     
         document.querySelectorAll('#post-good').forEach((postgood)=>{
             postgood.addEventListener('click', ()=>{
-                const myid= document.querySelector('#my-id');
-                if(myid) {
+                const myid= document.querySelector('#my-id').value;
                     const postid= postgood.parentNode.querySelector('#post-id').textContent;
-                    axios.post(`/user/good`, { postid })
+                    axios.post(`/user/good`, { postid,id:myid })
                         .then((res)=>{
                             location.reload(true);
                         })
                         .catch((err)=>{console.err(err)});
-                } 
             })
         })
     </script>

@@ -4,6 +4,7 @@ const { Post, User, Hashtag }= require('../models')
 const { isLogin, isNotLogin }= require('./middlewares');
 const db= require('../models/index');
 const { hash } = require('bcrypt');
+const { promise } = require('bcrypt/promises');
 
 router.use((req, res, next) => {
     res.locals.user= req.user;
@@ -27,12 +28,28 @@ router.get('/', async (req, res, next) => {
     try {
         const UserPost= db.sequelize.models.UserPost;
         const posts= await Post.findAll({
-            include: {
+            include: [{
                 model: User, //그래서 post.User 이렇게 쓰는 건가?
                 attributes: ['id', 'nick'],
-            },
+            },{
+                model:UserPost,
+            }],
             order:[[ 'createdAt', 'DESC']],
-        })
+        });
+        console.log(req.user.id);
+        await Promise.all(
+            posts.map(async(list,idx)=>{
+                const result= await UserPost.findOne({
+                    where:{
+                        UserId:req.user.id,
+                        PostId:list.id,
+                    }
+                });
+                if(result) posts[idx]['dataValues'].good=true;
+                else posts[idx]['dataValues'].good=false;
+            })
+        );
+        console.log(posts);
         console.log('get / render before');
         res.render('main', { posts });
         console.log('get / render end!');
@@ -52,6 +69,7 @@ router.get('/hashtag', async (req, res, next)=>{
     try {
         const hashtag= await Hashtag.findOne({ where: { title: query }});
         let posts= [];
+        
         if(hashtag) {
             posts= await hashtag.getPosts({ include: [{ model: User }] });
         }
