@@ -13,14 +13,47 @@
         <fieldset>
             <legend>도메인 등록</legend>
             <form action="/domain" method="post">
-                <label for="type-free"></label>
-                <input type="radio" id="type-free" name="type" value="free">
+                <label for="type-free">무료</label>
+                <input type="radio" id="domain-type-free" name="domain_type" value="free">
                 <label for="type-premium">프리미엄</label>
-                <input type="radio" id="type-premium" name="type" value="premium">
+                <input type="radio" id="domain-type-premium" name="domain_type" value="premium">
                 <label for="host">도메인</label>
-                <input type="text" 
+                <input type="text" id="domain-host" name="domain_host" placeholder="zerocho.com">
+                <button>저장</button>
             </form>
         </fieldset>
+
+        <table>
+            <tr>
+                <th>도메인 주소</th>
+                <th>타입</th>
+                <th>클라이언트 비밀키</th>
+            </tr>
+            {% for domain in domains %}
+                <tr>
+                    <td>{{domain.host}}</td>
+                    <td>{{domain.type}}</td>
+                    <td>{{domain.clientSecret}}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    
+    {% else %}
+        <form action="auth/login" id="login-form" method="post">
+            <label for="email">이메일</label>
+            <input type="email" id="email" name="email" required autofocus>
+            <label for="password">비밀번호</label>                    
+            <input type="password" id="password" name="password" required>
+            <button type="submit" id="login-btn">제출</button>
+        </form>
+        <script>
+            window.onload= () => {
+                //location.href 현재 접속 중인 페이지
+                // /?name=min searchparams.get('name') 하면 "min" 을 줌
+                if(new URL(location.href).searchParams.get('loginError'))
+                    alert(new URL(location.href).searchParams.get('loginError'));
+            };
+        </script>
     {% endif %}
 </body>
 </html>
