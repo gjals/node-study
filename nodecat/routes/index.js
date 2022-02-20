@@ -17,7 +17,7 @@ router.get('/test', async (req, res, next)=>{
         return res.json(result.data);
     } catch (err) {
         console.error(err);
-        if(err.responce.status===419)
+        if(err.response.status===419)
             return res.json(err.responce.data);
         return next(err);
     }
