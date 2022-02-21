@@ -1,12 +1,14 @@
 const express= require('express');
 const jwt= require('jsonwebtoken');
-const { verifyToken, deprecated }= require('./middlewares');
+const { verifyToken, apiLimiter }= require('./middlewares');
 const { Domain, User, Post, Hashtag }= require('../models');
 const router= express.Router();
+const cors= require('cors');
+const { append } = require('express/lib/response');
 
-router.use(deprecated);
+router.use(cors({ credentials: true }));
 
-router.post('/token', async (req, res) => {
+router.post('/token', apiLimiter, async (req, res) => {
     const { clientSecret }= req.body; //await axios.post(`${URL}/token`, { clientSecret: process.env.CLIENT_SECRET})
     try {
         const domain= await Domain.findOne({
@@ -25,7 +27,7 @@ router.post('/token', async (req, res) => {
         const token= jwt.sign({
             id: domain.User.id,
             nick: domain.User.nick
-        }, process.env.JWT_SECRET, { expiresIn: '1m', issuer: 'nodebird'});
+        }, process.env.JWT_SECRET, { expiresIn: '30m', issuer: 'nodebird'});
         return res.json({
             code: 200,
             message: '토큰 발급됨',
@@ -37,7 +39,7 @@ router.post('/token', async (req, res) => {
     }
 });
 
-router.get('/posts/my', verifyToken, (req, res)=>{
+router.get('/posts/my', apiLimiter, verifyToken, (req, res)=>{
     Post.findAll({ where: { userId: req.decoded.id }})
         .then((posts) => {
             console.log(posts);
@@ -55,7 +57,7 @@ router.get('/posts/my', verifyToken, (req, res)=>{
         });
 });
 
-router.get('/posts/hashtag/:title', verifyToken, async (req, res)=>{
+router.get('/posts/hashtag/:title', apiLimiter, verifyToken, async (req, res)=>{
     try {
         console.log('v1 call');
         const hashtag= await Hashtag.findOne({ where: { title: req.params.title }});
@@ -69,7 +71,7 @@ router.get('/posts/hashtag/:title', verifyToken, async (req, res)=>{
     }
 });
 
-router.get('/test', verifyToken, (req, res) => {
+router.get('/test', verifyToken, apiLimiter, (req, res) => {
     return res.json(req.decoded);
 });
 
