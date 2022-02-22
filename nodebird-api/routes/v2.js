@@ -4,9 +4,20 @@ const { verifyToken, apiLimiter }= require('./middlewares');
 const { Domain, User, Post, Hashtag }= require('../models');
 const router= express.Router();
 const cors= require('cors');
-const { append } = require('express/lib/response');
+const url= require('url');
 
-router.use(cors({ credentials: true }));
+//router.use(cors({ credentials: true }));
+//axios.defaults.headers.origin= 'http://localhost:4000';
+router.use(async (req, res, next) => {
+    console.log(url.parse(req.get('origin')).host);
+    console.log(url.parse(req.get('origin')));
+    const baseurl= req.protocol + '://' + req.headers.host + '/';
+    console.log(new URL(req.get('origin'), baseurl));
+    const domain= await Domain.findOne({ where: {host: new URL(req.get('origin'), baseurl).host}});
+    if(domain) {
+        cors({ origin: req.get('origin'), credentials: true })(req, res, next);
+    } else next();
+});
 
 router.post('/token', apiLimiter, async (req, res) => {
     const { clientSecret }= req.body; //await axios.post(`${URL}/token`, { clientSecret: process.env.CLIENT_SECRET})
@@ -74,5 +85,6 @@ router.get('/posts/hashtag/:title', apiLimiter, verifyToken, async (req, res)=>{
 router.get('/test', verifyToken, apiLimiter, (req, res) => {
     return res.json(req.decoded);
 });
+
 
 module.exports= router;

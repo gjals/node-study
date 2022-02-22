@@ -11,7 +11,7 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script>
         axios.post('http://localhost:8002/v2/token', { clientSecret: '{{ key }}' })
-            .then((res)=>{document.querySelectorAll('#this').textContent= JSON.stringify(res.data);})
+            .then((res)=>{ document.querySelector('#this').textContent= JSON.stringify(res.data);})
             .catch((err)=>{console.error(err);});
     </script>
 </body>
