@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        // const webSocket= new WebSocket("ws://localhost:8005");
+        // webSocket.onopen= function () { console.log('서버와 웹소켓 연결 성공 ')};
+        // webSocket.onmessage= function (event) { console.log(event.data); webSocket.send('클라이언트에서 서버로 답장 보냄'); };
+        const socket= io.connect('http://localhost:8005', { path: '/socket.io'});
+        socket.on('news', function (data) { console.log(data); socket.emit('reply', 'hello node.js'); });
+    </script>
+</body>
+</html>
