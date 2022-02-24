@@ -8,6 +8,7 @@ const dotenv= require('dotenv');
 const webSocket= require('./socket');
 dotenv.config();
 const indexRouter= require('./routes');
+const connect= require('./connect');
 
 const app= express();
 app.set('port', 8005);
@@ -15,6 +16,7 @@ app.set('view engine', 'html');
 nunjucks.configure('views', { express: app, watch: true });
 //watch (default: false) reload templates when they are changed
 //express an express app that nunjucks should install to
+connect();
 
 app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
