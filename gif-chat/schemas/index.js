@@ -8,8 +8,8 @@ const connect= () => {
 
     mongoose.connect(MONGO_URL, {
         dbName: 'gifchat',
-        useNewUrlParser: true,
-        useCreateIndex: true
+        //useNewUrlParser: true, 몽고디비/몽구스 버전이 올라가서 해당 옵션을 넣으면 버그가 발생합니다. 지우시는 게 맞습니다.
+        //useCreateIndex: true
     }, (error)=>{
         if(error) console.log('몽고디비 연결 에러');
         else console.log('몽고디비 연결 성공');

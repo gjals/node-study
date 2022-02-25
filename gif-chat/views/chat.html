@@ -4,12 +4,62 @@
     <div id="chat_list">
         {% for chat in chats %}
             {% if chat.user === user %}
-                
-            
+                <div style="color: '{{chat.user}}'">
+                    {% if chat.gif %}
+                        <img src="/git/{{chat.gif}}">
+                    {% elif chat.chat %}
+                        {{chat.chat}}
+                    {% endif %}
+                </div>
+            {% elif chat.user === 'system' %}
+                <div style="color:brown">{{ chat.chat }}</div>
+            {% else %}
+                <div style="color: '{{ chat.user }}'">
+                    {% if chat.gif %}
+                        <img src="/gif/{{chat.git}}">
+                    {% elif chat.chat %}
+                        {{ chat.chat }}
+                    {% endif %}
+                </div>
             {% endif %}
-
-            {% elif condition %}
-                
         {% endfor %}
     </div>
+    <form action="/chat" id="chat_form" method="post" enctype="multipart/form-data">
+        <input type="file" id="chat_gif" name="chat_gif" accept="image/gif">
+        <input type="text" id="chat_text" name="chat_text">
+        <button type="submit">submit</button>
+    </form>
+    <script src="https://unpkg.com/axios/dis/axios.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket= io.connect("http://localhost:8005/chat", { path: '/socket.io'});
+        
+        socket.on('join', function(data) {
+            const div= document.createElement('div');
+            div.textContent= data.chat;
+            div.style.color= 'brown';
+            document.querySelector('#chat_list').appendChild(div);
+        }); //'join' || 'exit' 가능? 테스트 해보기
+        socket.on('exit', function(data) {
+            const div= document.createElement('div');
+            div.textContent= data.chat;
+            div.style.color= 'brown';
+            document.querySelector('#chat_list').appendChild(div);
+        });
+
+        socket.on('chat', function (data) {
+            const div= document.createElement('div');
+            div.appendChild(data.user);
+            if(data.chat) div.appendChild(data.chat);
+            if(data.gif) {
+                const gif= document.createElement('img');
+                gif.src= '/gif/' + data.gif;
+                div.appendChild(gif);
+            }
+            div.style.color= data.user;
+            document.querySelectorAll('#chat_list').appendChild(div);
+        });
+
+
+    </script>
 {% endblock %}

@@ -20,6 +20,7 @@
             </tr>
             {% endfor %}
         </table>
+        <a href="/room">채팅방 생성</a>
     </fieldset>
     <script src="/socket.io/socket.io.js"></script>
     <script>
@@ -37,7 +38,7 @@
             tr.appendChild(td);
 
             td= document.createElement('td');
-            td.textContent= max;
+            td.textContent= data.max;
             tr.appendChild(td);
 
             td= document.createElement('td');
@@ -55,10 +56,11 @@
             tr.appendChild(td);
             tr.dataset.id= data._id;
             document.querySelector('table').appendChild(tr);
+            alert('생성됨!');
         });
 
         document.querySelectorAll('.join-btn').forEach(function (btn) {
-            btn,addEventListener(addBtnEvent);
+            btn.addEventListener('click', addBtnEvent);
         })
 
         function addBtnEvent(e) {
