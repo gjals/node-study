@@ -24,7 +24,7 @@ module.exports= function (server, app, sessionMiddleware) {
         //Referer 요청 헤더는 현재 요청을 보낸 페이지의 절대 혹은 부분 주소
         const roomId= referer.split('/')[referer.split('/').length-1].replace(/\?.+/, '');
         socket.join(roomId); //이게 언제 실행되지?
-        socket.to(roomId).emit('join', { user:'system', chat:`${req.session.color}님이 입장함` });
+        socket.to(roomId).emit('join', { user:'system', chat:`${req.session.color}님이 입장함` }); //새로고침만 해도 소켓이 connect disconnect되나봄
 
         socket.on('disconnect', async ()=> {
             console.log('chat namespace end'); 
@@ -35,7 +35,7 @@ module.exports= function (server, app, sessionMiddleware) {
                 const signedCookie= req.signedCookies['connect.sid'];//요청에서 서명된 쿠키를 가져옴
                 const connectSID= cookie.sign(signedCookie, process.env.COOKIE_SECRET); //다시 쿠키를 암호화함?
                 console.log(referer, roomId, connectSID);
-                await axios.delete(`http://localhost:8005/room/${roomId}`).then(()=>console.log('success')).catch((err)=>console.error(err));
+                await axios.delete(`http://localhost:8005/room/${roomId}`, { headers: {Cookie: `connect.sid=s%3A${connectSID}`}}).then(()=>console.log('success')).catch((err)=>console.error(err));
             }
             else
                 socket.to(roomId).emit('exit', {user: 'system', chat:`${req.session.color}님이 퇴장함`});

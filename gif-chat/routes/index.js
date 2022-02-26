@@ -2,6 +2,32 @@ const express= require('express');
 const router= express.Router();
 const Room= require('../schemas/room');
 const Chat= require('../schemas/chat');
+const multer= require('multer');
+const path= require('path');
+const fs= require('fs');
+
+try { fs.readdirSync('uploads'); } catch(err) { fs.mkdirSync('uploads'); }
+
+// const upload= multer({ storage: multer.diskStorage({ destination(req, file, done) { done(null, 'uploads/') }, filename(req, file, done) {
+//     const ext= path.extname(file.originalname);
+//     console.log('multer 실행됨');
+//     done(null, path.basename(file.originalname, ext) + Date.now() + ext);
+// }}), limits: {fileSize: 10*1024*1024}
+// });
+
+const upload= multer({
+    storage: multer.diskStorage({
+        destination(req, file, cb) {
+            cb(null, 'uploads/');
+        },
+        filename(req, file, cb) {
+            const ext= path.extname(file.originalname); //확장자만 줌 asdf.html이면 '.html'
+            cb(null, path.basename(file.originalname, ext)+Date.now()+ext);
+            //originalname Name of the file on the user’s computer
+        },
+    }),
+    limits: { fileSize: 10*1024*1024 },
+});
 
 router.get('/', async (req, res)=>{
     try {
@@ -35,7 +61,7 @@ router.get('/room/:id', async (req, res, next)=>{
         
         const room= await Room.findOne({ _id: req.params.id });
         const io= req.app.get('io');
-        console.log(req.params.id, room.password, req.query.password);
+        //console.log(req.params.id, room.password, req.query.password);
         if(!room) return res.redirect('/?error=존재하지 않는 방입니다');
         if(room.password && room.password !== req.query.password) return res.redirect('/?error=비밀번호가 틀렸습니다');
 
@@ -44,6 +70,7 @@ router.get('/room/:id', async (req, res, next)=>{
         console.log(rooms[req.params.id]); // 이 방에 접속중인 소켓 목록이 나온대, chat.html render하고 chat socket을 가짐 = 방에 들어가 있음
 
         const chats= await Chat.find({ room: room._id }).sort('createdAt');
+        console.log('index get room render ', req.session.color);
         return res.render('chat', { room, chats, user: req.session.color });
     } catch (err) { console.error(err); next(err); }
 });
@@ -58,16 +85,19 @@ router.delete('/room/:id', async (req, res, next)=>{
     } catch (err) { console.error(err); next(err); }
 });
 
-router.post('/room/:id/chat', async (req, res, next)=>{
+router.post('/room/:id/chat', upload.single('gif'), async (req, res, next)=>{
     try {
+        //formdata를 보냈지만 req에서 못쓰는 이유는 바디파서가 이러한 multipart/formdata를 처리하지 못하기 때문. multer와 같은 모듈을 사용해야만 formdata를 읽을 수 있음
+        console.log('채팅내용', req.body.chat);
         const chat= await Chat.create({
             room: req.params.id,
             user: req.session.color,
-            chat: req.body.chat_text
+            chat: req.body.chat,
+            gif: req.file? req.file.filename : null
         });
         req.app.get('io').of('/chat').to(req.params.id).emit('chat', chat);
         res.send('ok');
     } catch (err) {console.error(err); next(err); }
-})
+});
 
 module.exports= router;

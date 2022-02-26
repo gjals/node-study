@@ -1,39 +1,32 @@
 {% extends "layout.html" %}
 {% block content %}
-    <h1>{{ title }}</h1>
+    <a href="/" id="exit-btn">방나가기</a>
     <div id="chat_list">
         {% for chat in chats %}
-            {% if chat.user === user %}
-                <div style="color: '{{chat.user}}'">
-                    {% if chat.gif %}
-                        <img src="/git/{{chat.gif}}">
-                    {% elif chat.chat %}
-                        {{chat.chat}}
-                    {% endif %}
-                </div>
-            {% elif chat.user === 'system' %}
+            {% if chat.user === 'system' %}
                 <div style="color:brown">{{ chat.chat }}</div>
             {% else %}
-                <div style="color: '{{ chat.user }}'">
+                <div style="color: {{chat.user}}" class="{{'mine' if chat.user === user else 'notmine'}}">
+                    <div>{{ chat.user }}</div>
                     {% if chat.gif %}
-                        <img src="/gif/{{chat.git}}">
+                        <img src="/gif/{{chat.gif}}">
                     {% elif chat.chat %}
-                        {{ chat.chat }}
+                        <div>{{chat.chat}}</div>
                     {% endif %}
                 </div>
             {% endif %}
         {% endfor %}
     </div>
-    <form action="/chat" id="chat_form" method="post" enctype="multipart/form-data">
+    <form action="/chat" id="chat_form" method="post" enctype="multipart/form-data" name="chat_form">
         <input type="file" id="chat_gif" name="chat_gif" accept="image/gif">
         <input type="text" id="chat_text" name="chat_text">
         <button type="submit">submit</button>
     </form>
-    <script src="https://unpkg.com/axios/dis/axios.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket= io.connect("http://localhost:8005/chat", { path: '/socket.io'});
-        
+
         socket.on('join', function(data) {
             const div= document.createElement('div');
             div.textContent= data.chat;
@@ -49,17 +42,43 @@
 
         socket.on('chat', function (data) {
             const div= document.createElement('div');
-            div.appendChild(data.user);
-            if(data.chat) div.appendChild(data.chat);
+            if(data.user==='{{user}}')
+                div.classList.add('mine');
+            let newdiv= document.createElement('div');
+            newdiv.textContent= data.user;
+            div.appendChild(newdiv);
+            if(data.chat) {
+                newdiv= document.createElement('div');
+                newdiv.textContent= data.chat;
+                div.appendChild(newdiv);
+            } 
             if(data.gif) {
                 const gif= document.createElement('img');
                 gif.src= '/gif/' + data.gif;
                 div.appendChild(gif);
             }
             div.style.color= data.user;
-            document.querySelectorAll('#chat_list').appendChild(div);
+            document.querySelector('#chat_list').appendChild(div);
         });
 
+        document.querySelector('#chat_form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            if(e.target.children[0].files.length===1 || e.target.chat_text.value) {
+                const formData= new FormData();
+                alert(new FormData(document.forms.namedItem("chat_form")));
+                alert(e.target.children[0].files.length===1);
+                if(e.target.children[0].files.length===1)
+                    formData.append('gif', e.target.children[0].files[0]); 
+                    // formData.append('img', this.files[0]);
+                if(e.target.chat_text.value)
+                    formData.append('text', e.target.chat_text.value);
+                axios.post('/room/{{room._id}}/chat', formData).then(()=> {
+                    e.target.chat_text.value=''; 
+                    e.target.children[0].file= null;
+                }).catch((err)=>console.error(err));
+            }
+                
+        });
 
     </script>
 {% endblock %}
