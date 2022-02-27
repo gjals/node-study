@@ -1,6 +1,12 @@
 {% extends "layout.html" %}
 {% block content %}
     <a href="/" id="exit-btn">방나가기</a>
+    <div id='chat_user_count'>{{userList.length}}</div>
+    <div id='chat_user_list'>
+    {% for user1 in userList %}
+        <div>{{ user1 }}</div>
+    {% endfor %}
+    </div>
     <div id="chat_list">
         {% for chat in chats %}
             {% if chat.user === 'system' %}
@@ -28,13 +34,26 @@
         const socket= io.connect("http://localhost:8005/chat", { path: '/socket.io'});
 
         socket.on('join', function(data) {
-            const div= document.createElement('div');
+            let div= document.createElement('div');
+            const num= document.getElementById('chat_user_count').textContent;
+            document.getElementById('chat_user_count').textContent= Number.parseInt(num)+1;
+            div.textContent= data.name;
+            document.getElementById('chat_user_list').appendChild(div);
+
+            div= document.createElement('div');
             div.textContent= data.chat;
             div.style.color= 'brown';
             document.querySelector('#chat_list').appendChild(div);
+            
         }); //'join' || 'exit' 가능? 테스트 해보기
         socket.on('exit', function(data) {
-            const div= document.createElement('div');
+            let div= document.createElement('div');
+            const num= document.getElementById('chat_user_count').textContent;
+            document.getElementById('chat_user_count').textContent= Number.parseInt(num)+1;
+            div.textContent= data.name;
+            document.getElementById('chat_user_list').appendChild(div);
+
+            div= document.createElement('div');
             div.textContent= data.chat;
             div.style.color= 'brown';
             document.querySelector('#chat_list').appendChild(div);
@@ -65,8 +84,8 @@
             e.preventDefault();
             if(e.target.children[0].files.length===1 || e.target.chat_text.value) {
                 const formData= new FormData();
-                alert(new FormData(document.forms.namedItem("chat_form")));
-                alert(e.target.children[0].files.length===1);
+                //alert(new FormData(document.forms.namedItem("chat_form")));
+                //alert(e.target.children[0].files.length===1); 
                 if(e.target.children[0].files.length===1)
                     formData.append('gif', e.target.children[0].files[0]); 
                     // formData.append('img', this.files[0]);
@@ -74,11 +93,11 @@
                     formData.append('text', e.target.chat_text.value);
                 axios.post('/room/{{room._id}}/chat', formData).then(()=> {
                     e.target.chat_text.value=''; 
-                    e.target.children[0].file= null;
+                    document.getElementById("chat_gif").value = ""; //e.target.children[0].file= null not work
                 }).catch((err)=>console.error(err));
             }
                 
         });
-
+        
     </script>
 {% endblock %}

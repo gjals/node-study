@@ -5,6 +5,7 @@ const Chat= require('../schemas/chat');
 const multer= require('multer');
 const path= require('path');
 const fs= require('fs');
+const ColorHash= require('color-hash').default;
 
 try { fs.readdirSync('uploads'); } catch(err) { fs.mkdirSync('uploads'); }
 
@@ -58,7 +59,7 @@ router.post('/room', async (req, res, next)=>{
 
 router.get('/room/:id', async (req, res, next)=>{
     try {
-        
+        const colorHash= new ColorHash();
         const room= await Room.findOne({ _id: req.params.id });
         const io= req.app.get('io');
         //console.log(req.params.id, room.password, req.query.password);
@@ -67,11 +68,12 @@ router.get('/room/:id', async (req, res, next)=>{
 
         const { rooms }= io.of('/chat').adapter;
         if(rooms && rooms[req.params.id] && room.max <= rooms[req.params.id].length) return res.redirect('/?error=허용인원을 초과함');
-        console.log(rooms[req.params.id]); // 이 방에 접속중인 소켓 목록이 나온대, chat.html render하고 chat socket을 가짐 = 방에 들어가 있음
-
+        console.log('소켓', rooms[req.params.id]); // 이 방에 접속중인 소켓 목록이 나온대, chat.html render하고 chat socket을 가짐 = 방에 들어가 있음
+        //const userList= Object.keys(rooms).map((k)=>colorHash.hex(k));
+        
         const chats= await Chat.find({ room: room._id }).sort('createdAt');
         console.log('index get room render ', req.session.color);
-        return res.render('chat', { room, chats, user: req.session.color });
+        return res.render('chat', { room, chats, user: req.session.color});
     } catch (err) { console.error(err); next(err); }
 });
 
@@ -88,11 +90,12 @@ router.delete('/room/:id', async (req, res, next)=>{
 router.post('/room/:id/chat', upload.single('gif'), async (req, res, next)=>{
     try {
         //formdata를 보냈지만 req에서 못쓰는 이유는 바디파서가 이러한 multipart/formdata를 처리하지 못하기 때문. multer와 같은 모듈을 사용해야만 formdata를 읽을 수 있음
-        console.log('채팅내용', req.body.chat);
+        //multer 모듈에서 파일은 req.file에 text field는 req.body.name 으로 넣어줌
+        console.log('채팅내용', req.body.text);
         const chat= await Chat.create({
             room: req.params.id,
             user: req.session.color,
-            chat: req.body.chat,
+            chat: req.body? req.body.text : null,
             gif: req.file? req.file.filename : null
         });
         req.app.get('io').of('/chat').to(req.params.id).emit('chat', chat);
