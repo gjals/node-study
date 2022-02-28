@@ -24,16 +24,14 @@ module.exports= function (server, app, sessionMiddleware) {
         //Referer 요청 헤더는 현재 요청을 보낸 페이지의 절대 혹은 부분 주소
         
         const roomId= referer.split('/')[referer.split('/').length-1].replace(/\?.+/, '');
-        const currentRoom= socket.adapter.rooms[roomId];
-
         socket.join(roomId); //이게 언제 실행되지?
-        
         socket.to(roomId).emit('join', { user:'system', chat:`${req.session.color}님이 입장함`, name: `${req.session.color}`}); //새로고침만 해도 소켓이 connect disconnect되나봄
 
         //새로고침을 하면 소켓이 끊어졌다 재연결됨, 그래서 혼자 있을 때 새로고침을 하면 퇴장이 되서 0명이 되어 방이 삭제되버림
         //브라우저마다 소켓이 생성됨, 같은 브라우저 탭 여러개로 하니 같은 사용자로 인식함
         socket.on('disconnect', async ()=> {
             socket.leave(roomId); 
+            const currentRoom= socket.adapter.rooms[roomId];
             const userCount= currentRoom? currentRoom.length : 0;
             if(userCount === 0) {
                 const signedCookie= req.signedCookies['connect.sid'];//요청에서 서명된 쿠키를 가져옴
