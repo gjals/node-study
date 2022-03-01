@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% block content %}
+    <form action="/good" method="post" enctype="multipart/form-data">
+        <input type="text" name="good_name" placeholder="name" required autofocus>
+        <input type="file" name="good_img" placeholder="image" required>
+        <input type=number name="good_price" placeholder="price" required>
+        <button type="submit">submit</button>
+    </form>
+{% endblock %}

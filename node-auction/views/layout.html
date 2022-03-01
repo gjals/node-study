@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="profile">
+        {% if user and user.id %}
+            <div>{{ user.nick }}님 {{ user.money }}원 보유중 </div>
+            <input type="hidden" id="profile_user_id" value="user.id">
+            <a href="/auth/logout">로그아웃</a>
+            <a href="/good">상품 등록</a>
+        {% else %}
+            <form action="/auth/login" method="post">
+                <input type="email" name="login_email" required autofocus placeholder="email">
+                <input type="password" name="login_password" required placeholder="password">
+                <a href="/join">회원가입</a>
+                <button type="submit">로그인</button>
+            </form> 
+        {% endif %}
+    </div>
+    
+    {% block good %}
+    {% endblock %}
+    {% block content %}
+    {% endblock %}
+    <script src="https://unpkg.com/event-source-polyfill/src/eventsource.min.js"></script>
+    <script>
+        function alert_error(err) {
+            if(new URL(location.href).searchParams.get(err)) alert(new URL(location.href).searchParams.get(err));
+        }
+        alert_error('loginError'); 
+    </script>
+    <script>
+        const es= new EventSource('/sse');
+        es.onmessage= function (e) {
+            document.querySelectorAll('.good_time').forEach((td)=>{
+                const endTime= new Date(td.dataset.start); //data-start
+                const serverTime= new Date(parseInt(e.data, 10)); 
+                endTime.setDate(endTime.getDate()+1);
+                //console.log(endTime, serverTime);
+                if(serverTime > endTime) return td.textContent= '00:00:00';
+                else {
+                    const t= endTime-serverTime;
+                    const seconds= ('0'+ Math.floor((t/1000)%60)).slice(-2);
+                    const minutes= ('0'+ Math.floor((t/1000/60)%60)).slice(-2);
+                    const hours= ('0'+ Math.floor((t/1000/60/60)%60)).slice(-2);
+                    return td.textContent= hours + ':' + minutes + ':' + seconds;
+                }
+            });
+        };
+    </script>
+</body>
+</html>

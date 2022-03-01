@@ -83,12 +83,6 @@ router.get('/room/:id', async (req, res, next)=>{
     } catch (err) { console.error(err); next(err); }
 });
 
-router.post('/room/userList', async (req, res, next)=>{
-    try {
-        console.log(req.body.username);
-        userList.push(req.body.username);
-    } catch (err) { console.error(err); next(err); }
-})
 
 router.delete('/room/:id', async (req, res, next)=>{
     try {

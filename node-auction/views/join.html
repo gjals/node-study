@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block content %} 
+<form action="/auth/join" method="post">
+    <input type="email" name="join_email" placeholder="email">
+    <input type="text" name="join_nick" placeholder="nickname">
+    <input type="password" name="join_password" placeholder="password">
+    <input type="number" name="join_money" placeholder="money">
+    <button type="submit">submit</button>
+</form>
+<script>
+    function alert_error(err) {
+            if(new URL(location.href).searchParams.get(err)) alert(new URL(location.href).searchParams.get(err));
+        }
+    alert_error('joinError'); 
+</script>
+{% endblock %}
