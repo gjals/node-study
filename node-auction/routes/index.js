@@ -4,6 +4,7 @@ const path= require('path');
 const fs= require('fs');
 const { Good, Auction, User }= require('../models');
 const { isLogin, isNotLogin }= require('./middlewares');
+const schedule= require('node-schedule');
 const router= express.Router();
 
 router.use((req, res, next)=>{ res.locals.user= req.user; next(); });
@@ -31,7 +32,15 @@ const upload= multer({ storage: multer.diskStorage({ destination(req, file, cb) 
 router.post('/good', isLogin, upload.single('good_img'), async (req, res, next)=>{
     try {
         const { good_name: name, good_price: price }= req.body;
-        await Good.create({ OwnerId: req.user.id, name, img: req.file.filename, price });
+        const exGood= await Good.create({ OwnerId: req.user.id, name, img: req.file.filename, price });
+
+        const end= new Date();
+        end.setDate(end.getDate() + 1);
+        schedule.scheduleJob(end, async()=>{
+            const success= await Auction.findOne({ where:{ GoodId: exGood.id}, order:[['bid', 'DESC']]});
+            await Good.update({ SoldId: success.UserId}, { where: { id: exGood.id }});
+            await User.update({ money: sequelize.literal(`money-${success.bid}`)}, { where: { id: success.UserId }});
+        });
         res.redirect('/');
     } catch (err) { console.error(err); next(err); }
 });
@@ -46,9 +55,9 @@ router.get('/good/:id', isLogin, async (req, res, next)=>{
     } catch (err) { console.error(err); next(err); }
 });
 
-router.post('good/:id/auction', isLogin, async (req, res, next)=>{
+router.post('/good/:id/auction', isLogin, async (req, res, next)=>{
     try {
-        console.log("index 도착");
+        console.log(req.user.id, req.body.me); //두 개가 서로 달라짐,,왜지?
         const { bid, msg }= req.body;
         const good= await Good.findOne({
             where: { id: req.params.id }, include: { model: Auction }, order: [[{ model: Auction }, 'bid', 'DESC' ]]
@@ -62,6 +71,13 @@ router.post('good/:id/auction', isLogin, async (req, res, next)=>{
         return res.send('ok');
     } 
     catch (err) { console.error(err); next(err); }
-}) 
+});
+
+router.get('/list', isLogin, async (req, res, next)=>{
+    try {
+        const goods= await Good.findAll({ where: { soldId: req.user.id}, include: { model: Auction }, order:[[ {model: Auction}, 'bid', 'DESC']] });
+        res.render('list', { goods });
+    } catch (err) { console.error(err); next(err); }
+})
 
 module.exports= router;

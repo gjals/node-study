@@ -13,9 +13,11 @@ const { sequelize }= require('./models');
 const passportConfig= require('./passport');
 const sse= require('./sse');
 const webSocket= require('./socket');
+const checkAuction= require('./checkAuction');
 
 const app= express();
 passportConfig();
+checkAuction();
 app.set('port', 8010);
 app.set('view engine', 'html');
 nunjuckst.configure('views', {express: app, watch: true});

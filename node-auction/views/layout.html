@@ -13,6 +13,7 @@
             <input type="hidden" id="profile_user_id" value="user.id">
             <a href="/auth/logout">로그아웃</a>
             <a href="/good">상품 등록</a>
+            <a href="/list">낙찰 내역</a>
         {% else %}
             <form action="/auth/login" method="post">
                 <input type="email" name="login_email" required autofocus placeholder="email">
@@ -32,7 +33,7 @@
         function alert_error(err) {
             if(new URL(location.href).searchParams.get(err)) alert(new URL(location.href).searchParams.get(err));
         }
-        alert_error('loginError'); 
+        window.onload= () => alert_error('loginError'); 
     </script>
     <script>
         const es= new EventSource('/sse');

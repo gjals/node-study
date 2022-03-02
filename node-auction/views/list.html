@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block content %}
+    <table>
+        <tr>
+            <th>상품명</th> <th>사진</th> <th>낙찰가</th>
+        </tr>
+        {% for good in goods %}
+            <tr>
+                <td>{{good.name}}</td> <td><img src="/img/{{good.img}}"></td> <td>{{good.Auctions[0].bid}}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

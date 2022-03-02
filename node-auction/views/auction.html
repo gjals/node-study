@@ -31,9 +31,9 @@
         document.querySelector('#good_form').addEventListener('submit', (e)=>{
             e.preventDefault();
             alert(e.target.auction_message.value);
-            axios.post('/good/{{good.id}}/auction', { bid: e.target.auction_price.value, msg: e.target.auction_message.value })
+            axios.post('/good/{{good.id}}/auction', { bid: e.target.auction_price.value, msg: e.target.auction_message.value, user: '{{user.id}}'})
                 .catch((err)=>{ console.error(err); alert(err.response.data); })
-                .finally(()=>{ e.target.auction_price.value=''; e.target.auction_message.value=''; })
+                .finally(()=>{ e.target.auction_price.value=''; e.target.auction_message.value=''; });
         })
 
         const socket= io.connect('http://localhost:8010', { path: '/socket.io' });
@@ -48,7 +48,7 @@
         function alert_error(err) {
             if(new URL(location.href).searchParams.get(err)) alert(new URL(location.href).searchParams.get(err));
         }
-        alert_error('auctionError');
+        window.onload= () => alert_error('auctionError');
     </script>
 {% endblock %}
 
