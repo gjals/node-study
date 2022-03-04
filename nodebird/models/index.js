@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 const env = process.env.NODE_ENV || 'development';
-const config = require(__dirname + '/../config/config.json')[env];
+const config = require(__dirname + '/../config/config.js')[env];
 const User= require('./user');
 const Post= require('./post'); // ./ 이거는 현재 폴더? 인듯
 const Hashtag= require('./hashtag');

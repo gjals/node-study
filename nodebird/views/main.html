@@ -46,10 +46,10 @@
 {% block script %}
     <script>
         if (document.getElementById('post-image')) {
-            document.getElementById('post-image').addEventListener('change', function(e) {
-                const formData= new FormData();
+            document.getElementById('post-image').addEventListener('change', function(e) { 
+                const formData= new FormData(); //Don't forget the enctype="multipart/form-data" in your form.
                 console.log(this, this.files);
-                formData.append('img', this.files[0]);
+                formData.append('img', this.files[0]);  //upload.single('img'),  It is important that you use the name field value from the form in your upload function.
                 axios.post('/post/img', formData)
                     .then((res) => {
                         document.getElementById('post-image-preview').src= res.data.url; //post하면 res.json({url:'--'})로 데이터 넣어주니 그걸 갖다 씀

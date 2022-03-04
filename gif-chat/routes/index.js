@@ -57,7 +57,7 @@ router.post('/room', async (req, res, next)=>{
     } catch (err) { console.error(err); next(err); }
 });
 
-let userList= [];
+
 router.get('/room/:id', async (req, res, next)=>{
     try {
         //const colorHash= new ColorHash();
@@ -72,17 +72,10 @@ router.get('/room/:id', async (req, res, next)=>{
         
         // 이 방에 접속중인 소켓 목록이 나온대, chat.html render하고 chat socket을 가짐 = 방에 들어가 있음
         
-        userList= [];
-        console.log(req.params.id, '방');
-        await io.of('/chat').to(req.params.id).emit('userList');
-        setTimeout(function(){}, 1000);
-        userList.push(req.session.color);
         const chats= await Chat.find({ room: room._id }).sort('createdAt');
-        console.log('index get room render ', req.session.color);
-        return res.render('chat', { room, chats, user: req.session.color, userList});
+        return res.render('chat', { room, chats, user: req.session.color});
     } catch (err) { console.error(err); next(err); }
 });
-
 
 router.delete('/room/:id', async (req, res, next)=>{
     try {

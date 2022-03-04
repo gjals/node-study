@@ -1,9 +1,9 @@
 {% extends "layout.html" %}
 {% block content %}
     <a href="/" id="exit-btn">방나가기</a>
-    <div id='chat_user_count'>{{userList.length}}</div>
+    <!-- <div id='chat_user_count'>{{userList.length}}</div>
     <div id='chat_user_list'>
-    {% for user1 in userList %}
+    {% for user1 in userList %} -->
         <div id="chat_user_name" style="color: {{user1}}">{{ user1 }}</div>
     {% endfor %}
     </div>
@@ -36,19 +36,19 @@
         socket.on('join', function(data) {
             let div= document.createElement('div');
             
-            const bool= false;
-            document.querySelectorAll('#chat_user_name').forEach((cun)=>{
-                if(cun.textContent === data.name) {
-                    b= true;
-                }
-            });
-            if(!b) {
-                const num= document.getElementById('chat_user_count').textContent;
-                document.getElementById('chat_user_count').textContent= Number.parseInt(num)+1;
-                div= document.createElement('div');
-                div.textContent= data.name;
-                document.getElementById('chat_user_list').appendChild(div);
-            }
+            // const bool= false;
+            // document.querySelectorAll('#chat_user_name').forEach((cun)=>{
+            //     if(cun.textContent === data.name) {
+            //         bool= true;
+            //     }
+            // });
+            // if(!bool) {
+            //     const num= document.getElementById('chat_user_count').textContent;
+            //     document.getElementById('chat_user_count').textContent= Number.parseInt(num)+1;
+            //     div= document.createElement('div');
+            //     div.textContent= data.name;
+            //     document.getElementById('chat_user_list').appendChild(div);
+            // }
             
             div= document.createElement('div');
             div.textContent= data.chat;
@@ -59,13 +59,13 @@
         socket.on('exit', function(data) {
             let div= document.createElement('div');
             
-            document.querySelectorAll('#chat_user_name').forEach((cun)=>{
-                if(cun.textContent === data.name) {
-                    cun.parentNode.removeChild(cun);
-                    const num= document.getElementById('chat_user_count').textContent;
-                    document.getElementById('chat_user_count').textContent= Number.parseInt(num)-1;
-                }
-            })
+            // document.querySelectorAll('#chat_user_name').forEach((cun)=>{
+            //     if(cun.textContent === data.name) {
+            //         cun.parentNode.removeChild(cun);
+            //         const num= document.getElementById('chat_user_count').textContent;
+            //         document.getElementById('chat_user_count').textContent= Number.parseInt(num)-1;
+            //     }
+            // })
 
             div.textContent= data.chat;
             div.style.color= 'brown';
@@ -93,9 +93,10 @@
             document.querySelector('#chat_list').appendChild(div);
         });
 
-        socket.on('userList', function () {
-            axios.post('/room/userList', { username: '{{user}}'});
-        });
+        // socket.on('userList', function (userList) {
+        //     alert(socket.adapter);
+        //     axios.post('/room/userList', {this: socket.adapter.rooms});
+        // });
 
         document.querySelector('#chat_form').addEventListener('submit', function (e) {
             e.preventDefault();

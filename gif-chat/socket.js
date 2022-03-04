@@ -4,7 +4,7 @@ const cookieParser= require('cookie-parser');
 const cookie= require('cookie-signature');
 
 module.exports= function (server, app, sessionMiddleware) {
-    const io= SocketIO(server, { path: '/socket.io'});
+    const io= SocketIO(server, { path: '/socket.io'}); //Sets the path value under which engine.io and the static files will be served. Defaults to /socket.io.
     app.set('io', io);
     const room= io.of('/room');
     const chat= io.of('/chat');
@@ -28,7 +28,7 @@ module.exports= function (server, app, sessionMiddleware) {
         socket.to(roomId).emit('join', { user:'system', chat:`${req.session.color}님이 입장함`, name: `${req.session.color}`}); //새로고침만 해도 소켓이 connect disconnect되나봄
 
         //새로고침을 하면 소켓이 끊어졌다 재연결됨, 그래서 혼자 있을 때 새로고침을 하면 퇴장이 되서 0명이 되어 방이 삭제되버림
-        //브라우저마다 소켓이 생성됨, 같은 브라우저 탭 여러개로 하니 같은 사용자로 인식함
+        //같은 브라우저 탭 여러개로 하니 같은 사용자로 인식함
         socket.on('disconnect', async ()=> {
             socket.leave(roomId); 
             const currentRoom= socket.adapter.rooms[roomId];
@@ -44,7 +44,9 @@ module.exports= function (server, app, sessionMiddleware) {
         });
     })
 };
-
+ // const webSocket= new WebSocket("ws://localhost:8005");
+        // webSocket.onopen= function () { console.log('서버와 웹소켓 연결 성공 ')};
+        // webSocket.onmessage= function (event) { console.log(event.data); webSocket.send('클라이언트에서 서버로 답장 보냄'); };
 
 // module.exports= function (server) {
 //     const wss= new WebSocket.Server({ server });
