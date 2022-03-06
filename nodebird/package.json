@@ -4,8 +4,9 @@
   "description": "익스프레스로 만드는 SNS 서비스",
   "main": "app.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=production PORT=80 nodemon app",
+    "start": "pm2 start app.js",
     "dev": "nodemon server",
+    "stop": "pm2 kill",
     "test": "jest"
   },
   "author": "zerocho",
@@ -25,8 +26,10 @@
     "passport": "^0.5.2",
     "passport-kakao": "^1.0.1",
     "passport-local": "^1.0.0",
+    "pm2": "^5.2.0",
     "sequelize": "^6.16.1",
-    "sequelize-cli": "^6.4.1"
+    "sequelize-cli": "^6.4.1",
+    "winston": "^3.6.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"
