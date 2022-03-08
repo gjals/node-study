@@ -2,9 +2,8 @@ const Sequelize = require('sequelize');
 const env = process.env.NODE_ENV || 'development';
 const config = require(__dirname + '/../config/config.js')[env];
 const User= require('./user');
-const Post= require('./post'); // ./ 이거는 현재 폴더? 인듯
-const Hashtag= require('./hashtag');
-const UserPost=require('./userpost');
+const Post= require('./post'); 
+const Book= require('./book');
 
 const db = {};
 const sequelize = new Sequelize(config.database, config.username, config.password, config);
@@ -12,17 +11,14 @@ const sequelize = new Sequelize(config.database, config.username, config.passwor
 db.sequelize = sequelize;
 db.User= User;
 db.Post= Post;
-db.Hashtag= Hashtag;
-db.UserPost=UserPost;
+db.Book= Book;
 
 User.init(sequelize);
 Post.init(sequelize);
-Hashtag.init(sequelize);
-UserPost.init(sequelize);
+Book.init(sequelize);
 
 User.associate(db);
 Post.associate(db);
-Hashtag.associate(db);
-UserPost.associate(db);
+Book.associate(db);
 
 module.exports = db;
