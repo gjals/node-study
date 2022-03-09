@@ -1,0 +1,65 @@
+{% extends "layout.html" %}
+{% block content %}
+    <form method="post" action="/post/newPost">
+        <input type="text" placeholder="제목/작가를 입력하세요" onchange="searchBooks(this)">
+        <div id="result_list">
+        </div>
+        <div onclick="selectBook(this)">
+            <img src="{{ result.title_url }}">
+            <h1>{{ result.title + ' , ' + result.author }}</h1>
+        </div>
+        {% endfor %}
+        <textarea name="post_title" id="" cols="30" rows="10" maxlength="40"></textarea>
+        <textarea name="post_free_text" id="" cols="30" rows="10" maxlength="200"></textarea>
+    </form> 
+{% endblock %}
+
+{% block script %}
+    <script>
+        const axios= require('axios').default;
+        const parseString = require('xmljs2').parseString;
+
+
+        function SearchBooks(e) {
+            const text= e.target.value;
+            const url= "https://www.nl.go.kr/NL/search/openApi/search.do?key=" + "{{ key }}" + "&kwd=" + text;
+            const xml= axios.get(url);
+            const result_list_div= document.getElementById('result_list');
+            while ( result_list_div.hasChildNodes() ) { result_list_div.removeChild( result_list_div.firstChild ); }
+            parseString(xml).then((result) => {  
+                result.root.result.item.forEach(item=> {
+                    axios.post('/book/admin', { item });
+                    
+                    const div= document.createElement('div');
+                    const img= document.createElement('img');
+                    const h1_1= document.createElement('h1');
+                    const h1_2= document.createElement('h1');
+                    const h1_3= document.createElement('h1');
+                    const h1_4= document.createElement('h1');
+
+                    h1_3.style.display= 'none';
+                    h1_4.style.display= 'none';
+
+                    img.src= "https://cover.nl.go.kr/kolis/" + item.pub_year_info + "/" + item.control_no +  "_thumbnail.jpg";
+                    h1_1.textContent= item.title_info;
+                    h1_2.textContent= item.author_info;
+                    h1_3.textContent= item.kdc_code_1s;
+                    h1_4.textContent= item.isbn;
+                    div.apppendChild(img);
+                    div.appendChild(h1_1);
+                    div.appendChild(h1_2);
+                    div.appendChild(h1_3);
+                    div.appendChild(h1_4);
+                    div.onClick= selectBook(this);
+                    result_list_div.appendChild(div);
+                });
+                
+            });
+        }
+
+        function selectBook(e) {
+            const isbn= e.target.children[4].value;
+            axios.post('/book/admin', { isbn });
+        }
+    </script>
+{% endblock %}
