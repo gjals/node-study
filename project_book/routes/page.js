@@ -17,9 +17,9 @@ router.get('/join', isNotLogin, (req, res) => {
     res.render('join');
 });
 
-router.get('/login', (req, res=>{
+router.get('/login', (req, res)=>{
     res.render('login');
-}));
+});
 
 router.get('/post', (req, res)=>{
     res.render('login');

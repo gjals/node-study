@@ -1,0 +1,30 @@
+{
+  "name": "project_book",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "nodemon app"
+  },
+  "author": "min",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "express-session": "^1.17.2",
+    "helmet": "^5.0.2",
+    "hpp": "^0.2.3",
+    "morgan": "^1.10.0",
+    "mysql2": "^2.3.3",
+    "nodemon": "^2.0.15",
+    "nunjucks": "^3.2.3",
+    "passport": "^0.5.2",
+    "passport-kakao": "^1.0.1",
+    "passport-local": "^1.0.0",
+    "sequelize": "^6.17.0",
+    "sequelize-cli": "^6.4.1",
+    "winston": "^3.6.0"
+  }
+}

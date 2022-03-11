@@ -58,7 +58,7 @@ router.get('/kakao/callback', (req, res, next )=>{console.log('카카오 callbac
     failureRedirect: '/',
 }), (req, res) => { console.log('kakao callback 끝'); res.redirect('/');});
 
-//req.login logout 이 메소드는 뭘까,,,
+
 router.get('/logout', isLogin, (req, res, next) => {
     req.logout();
     req.session.destroy();
