@@ -1,18 +1,14 @@
 {% extends "layout.html" %}
 {% block content %}
     <a href="/" id="exit-btn">방나가기</a>
-    <!-- <div id='chat_user_count'>{{userList.length}}</div>
-    <div id='chat_user_list'>
-    {% for user1 in userList %} -->
-        <div id="chat_user_name" style="color: {{user1}}">{{ user1 }}</div>
-    {% endfor %}
+        <div id="chat_user_name" style="color: '{{user1}}'">{{ user1 }}</div>
     </div>
     <div id="chat_list">
         {% for chat in chats %}
             {% if chat.user === 'system' %}
                 <div style="color:brown">{{ chat.chat }}</div>
             {% else %}
-                <div style="color: {{chat.user}}" class="{{'mine' if chat.user === user else 'notmine'}}">
+                <div style="color: '{{chat.user}}'" class="{{'mine' if chat.user === user else 'notmine'}}">
                     <div>{{ chat.user }}</div>
                     {% if chat.gif %}
                         <img src="/gif/{{chat.gif}}">

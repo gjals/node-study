@@ -20,6 +20,7 @@ module.exports= function (server, app, sessionMiddleware) {
     chat.on('connection', (socket)=>{
         console.log('chat namespace start');
         const req= socket.request;
+        console.log('요청 리퀘스트', req);
         const { headers: { referer }}= req; //req에서 header객체안에 referer변수? 객체? 불러옴
         //Referer 요청 헤더는 현재 요청을 보낸 페이지의 절대 혹은 부분 주소
         
@@ -31,10 +32,12 @@ module.exports= function (server, app, sessionMiddleware) {
         //같은 브라우저 탭 여러개로 하니 같은 사용자로 인식함
         socket.on('disconnect', async ()=> {
             socket.leave(roomId); 
+
             const currentRoom= socket.adapter.rooms[roomId];
             const userCount= currentRoom? currentRoom.length : 0;
             if(userCount === 0) {
                 const signedCookie= req.signedCookies['connect.sid'];//요청에서 서명된 쿠키를 가져옴
+                console.log('세션 쿠키', signedCookie);
                 const connectSID= cookie.sign(signedCookie, process.env.COOKIE_SECRET); //다시 쿠키를 암호화함?
                 console.log(referer, roomId, connectSID);
                 await axios.delete(`http://localhost:8005/room/${roomId}`, { headers: {Cookie: `connect.sid=s%3A${connectSID}`}}).then(()=>console.log('success')).catch((err)=>console.error(err));

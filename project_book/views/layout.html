@@ -11,8 +11,6 @@
             <div class="profile-box">
                 {% if user and user.id %}
                     <div class="profile-name">{{ user.nick+ ' 님' }}</div>
-                    <div class="profile-following-count">{{ '팔로잉 '+ followingCount}}</div>
-                    <div class="profile-follower-count">{{ '팔로워 '+ followerCount}}</div>
                     <input id="my-id" type="hidden" value="{{user.id}}"> 
                     <a id="profile-move" href="/profile">내 프로필</a>
                     <a id="profile-logout" href="/auth/logout">로그아웃</a>

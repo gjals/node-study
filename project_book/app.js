@@ -18,6 +18,7 @@ const userRouter= require('./routes/user');
 const logger= require('./logger');
 const helmet= require('helmet');
 const hpp= require('hpp');
+const webSocket= require('./socket');
 
 
 const app= express();
@@ -53,14 +54,16 @@ if(process.env.NODE_ENV==='production') {
     app.use(hpp());
 }
 
-app.use(session(sessionOption));
+const sessionMiddleware= session(sessionOption);
+app.use(sessionMiddleware);
 
 app.use(passport.initialize());
 app.use(passport.session());
 app.use('/', pageRouter);                                                                       
 app.use('/auth', authRouter);
 app.use('/user', userRouter);
-app.use('/post', postRouter);                                                           
+app.use('/post', postRouter); 
+
 app.use((req, res, next) => {
     const err= new Error(`${req.method}${req.url} 라우터가 없습니다`);
     logger.info('hello');
@@ -69,10 +72,11 @@ app.use((req, res, next) => {
 });
 app.use((err, req, res, next) => {
     res.locals.message= err.message;
+    console.error(err.message);
     res.render('layout');
 });
 
-app.listen(app.get('port'), () => {
+const server= app.listen(app.get('port'), () => {
     console.log(app.get('port'));
 })
-
+webSocket(server, app, sessionMiddleware);

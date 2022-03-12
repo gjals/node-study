@@ -9,20 +9,13 @@ router.use((req, res, next) => {
     next();
 });
 
-router.get('/profile', isLogin, (req, res) => {
-    res.render('profile');
-});
-
 router.get('/join', isNotLogin, (req, res) => {
     res.render('join');
 });
 
-router.get('/login', (req, res)=>{
-    res.render('login');
-});
-
-router.get('/post', (req, res)=>{
-    res.render('login');
+router.get('/post', isLogin, (req, res)=>{
+    console.log('page post까진 옴');
+    res.render('post');
 });
 
 router.get('/', async (req, res, next) => {
