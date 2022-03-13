@@ -51,13 +51,13 @@
                     div.appendChild(h1_2);
                     div.appendChild(h1_3);
                     div.appendChild(h1_4);
-                    div.onClick= selectBook(item.isbn);
+                    div.onClick= selectBook(item.title_info._cdata, item.author_info._cdata, item.kdc_code_1s.cdata, item.isbn._cdata);
                     result_list_div.appendChild(div);
             });
         })
         
-        function selectBook(isbn) {
-            axios.post('/book/admin', { isbn });
+        function selectBook(title, author, kdc, isbn) {
+            axios.post('/book/admin', { title, author, kdc, isbn });
         }
 
     </script>
