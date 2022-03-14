@@ -1,13 +1,22 @@
 {% extends "layout.html" %}
 {% block content %}
 <div id="post_box">
-    <form method="post" action="/post/newPost">
-        <input type="text" id="search_text" placeholder="제목/작가를 입력하세요">
-        <button onclick="searchBook()">search</button>
+    <form method="post" action="/book/search">
+        <input type="text" id="search_text" name="search_text" placeholder="제목/작가를 입력하세요">
+        <button type="submit">search</button>
+    </form>
+    <form method="post" action="/post/{{ user.id }}/newPost">
         <div id="result_list">
         </div>
+        <div id="book_box">
+            <img id="book_img">
+            <h1 id="book_title"></h1>
+            <h1 id="book_author"></h1>
+        </div> 
+        <input type="hidden" name="post_book_isbn"> 
         <textarea name="post_title" id="" cols="30" rows="10" maxlength="40"></textarea>
         <textarea name="post_free_text" id="" cols="30" rows="10" maxlength="200"></textarea>
+        <button type="submit">제출</button>
     </form> 
 </div>
 {% endblock %}
@@ -18,47 +27,71 @@
     <script>
         const socket= io.connect('http://localhost:8080/post', { path: '/socket.io'});
 
-        function searchBook() {
-            const text= document.getElementById('search_text').value;
-            alert(text);
-            axios.post('/post/search', { text });
-        }
-
-        socket.on('searchBooks', function (data) {
+        
+        socket.on('connect', function () {
+            socket.on('searchBooks', async function (data) {
+                const result_list_div= document.getElementById('result_list');
+                while ( result_list_div.hasChildNodes() ) { result_list_div.removeChild( result_list_div.firstChild ); }
+                const data_js= JSON.parse(data);
             
-            const result_list_div= document.getElementById('result_list');
-            while ( result_list_div.hasChildNodes() ) { result_list_div.removeChild( result_list_div.firstChild ); }
-            const data_js= JSON.parse(data);
-            alert(data_js.root.result.item[0].title_info._cdata);
-            data_js.root.result.item.forEach(item=> {
+                alert(data_js.root.result.item[0]);
+                let count=0;
+                for(let i=0; i<20; i++) {
+                    if(count==5) break; 
+                    const item= data_js.root.result.item[i];
                     const div= document.createElement('div');
                     const img= document.createElement('img');
                     const h1_1= document.createElement('h1');
                     const h1_2= document.createElement('h1');
-                    const h1_3= document.createElement('h1');
-                    const h1_4= document.createElement('h1');
 
-                    h1_3.style.display= 'none';
-                    h1_4.style.display= 'none';
+                    const title=item.title_info._cdata;
+                    const author= item.author_info._cdata;
+                    const kdc= item.kdc_code_1s._cdata;
+                    const isbn= item.isbn._cdata;
+                    if(!isbn){
+                        continue;
+                    }
+                    img.onerror= "this.style.display='none'";
+                    const img_url= await getImage(isbn, item.pub_year_info._text, item.control_no._text);
+                        console.log('img url:', img_url);
+                        img.src= data;
+                        h1_1.textContent= title? title : "?";
+                        h1_2.textContent= author? author : "?";
 
-                    img.src= "https://cover.nl.go.kr/kolis/" + item.pub_year_info._text + "/" + item.control_no._text +  "_thumbnail.jpg";
-                    h1_1.textContent= item.title_info._cdata;
-                    h1_2.textContent= item.author_info._cdata;
-                    h1_3.textContent= item.kdc_code_1s.cdata;
-                    h1_4.textContent= item.isbn._cdata;
                     div.appendChild(img);
                     div.appendChild(h1_1);
                     div.appendChild(h1_2);
-                    div.appendChild(h1_3);
-                    div.appendChild(h1_4);
-                    div.onClick= selectBook(item.title_info._cdata, item.author_info._cdata, item.kdc_code_1s.cdata, item.isbn._cdata);
+                    div.onClick= selectBook(title, author, kdc, isbn);
                     result_list_div.appendChild(div);
-            });
-        })
+                    count++;
+                }
+            })
+        });
         
         function selectBook(title, author, kdc, isbn) {
-            axios.post('/book/admin', { title, author, kdc, isbn });
+            axios.post('/book/admin', { title, author, kdc, isbn }).then((res)=>{ 
+                if(res.data.code!=200) {
+                    console.log('책이 제대로 등록되지 않았음', res.data.message);
+                    return;
+                }
+                const book= res.data.payload;
+                document.getElementById('book_title').textContent= book.title;
+                document.getElementById('book_author').textContent= book.author;
+                document.getElementByName('post_book_isbn').value= book.isbn;
+                //document.getElementById('book_img').src= book.title_url;
+            }).catch((err)=>{
+                console.log(err);
+            });
         }
 
+        async function getImage(isbn, year, controlno) {
+            axios.post(`/book/image/${isbn}`, { year, controlno}).then((res)=>{
+                if(res.data.code==200) {
+                    return (res.data.code);
+                }
+                else 
+                    return ("http://localhost:8080/public/iconBook.png");
+            }).catch((err)=>{ console.log(err); });
+        }
     </script>
 {% endblock %}

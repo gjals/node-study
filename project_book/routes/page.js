@@ -29,7 +29,6 @@ router.get('/', async (req, res, next) => {
             order:[[ 'createdAt', 'DESC']],
         });
         
-        console.log(posts);
         console.log('get / render before');
         res.render('main', { posts });
         console.log('get / render end!');

@@ -4,7 +4,7 @@ const morgan= require('morgan'); //로그로 상세하게 출력해줌 morgan
 const path= require('path');
 const session= require('express-session');
 const nunjucks= require('nunjucks');
-
+const BodyParser= require('body-parser');
 const dotenv= require('dotenv');
 dotenv.config(); //이걸 해야 process.env로 쓸 수 있음 안하면 undefied
 
@@ -15,6 +15,7 @@ const passport= require('passport');
 const passportConfig= require('./passport')
 const postRouter= require('./routes/post');
 const userRouter= require('./routes/user');
+const bookRouter= require('./routes/book');
 const logger= require('./logger');
 const helmet= require('helmet');
 const hpp= require('hpp');
@@ -34,8 +35,8 @@ sequelize.sync({force:false}).then(()=>{console.log('연결 성공');}).catch((e
 if(process.env.NODE_ENV==='production')
     app.use(morgan('combined'));
 else app.use(morgan('dev'));
-app.use(express.static(path.join(__dirname, 'public')));
-app.use('/img', express.static(path.join(__dirname, 'uploads')));
+app.use(BodyParser.json());
+app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use(express.json()); // 이 두개는 쓸 때와 안 쓸 때 큰 차이를 모르겠음
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser(process.env.COOKIE_SECRET));
@@ -63,6 +64,7 @@ app.use('/', pageRouter);
 app.use('/auth', authRouter);
 app.use('/user', userRouter);
 app.use('/post', postRouter); 
+app.use('/book', bookRouter);
 
 app.use((req, res, next) => {
     const err= new Error(`${req.method}${req.url} 라우터가 없습니다`);
@@ -73,7 +75,7 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
     res.locals.message= err.message;
     console.error(err.message);
-    res.render('layout');
+    res.render('error');
 });
 
 const server= app.listen(app.get('port'), () => {

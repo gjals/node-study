@@ -4,7 +4,7 @@ const cookieParser= require('cookie-parser');
 const cookie= require('cookie-signature');
 
 module.exports= function (server, app, sessionMiddleware) {
-    const io= SocketIO(server, { path: '/socket.io'}); //Sets the path value under which engine.io and the static files will be served. Defaults to /socket.io.
+    const io= SocketIO(server, { path: '/socket.io', allowEIO3: true }); //Sets the path value under which engine.io and the static files will be served. Defaults to /socket.io.
     app.set('io', io);
     const post= io.of('/post');
 
@@ -14,11 +14,12 @@ module.exports= function (server, app, sessionMiddleware) {
     });
     
     post.on('connection', (socket)=>{
-        console.log('post namespace start');
         const req= socket.request;
         socket.join(req.sessionID); //이게 언제 실행되지?
+        console.log('post namespace start', req.sessionID);
         socket.on('disconnect', async ()=> {
             socket.leave(req.sessionID); 
+            console.log('post namespace disconnect');
         })
     });
 };
