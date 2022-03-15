@@ -36,35 +36,42 @@
             
                 alert(data_js.root.result.item[0]);
                 let count=0;
-                for(let i=0; i<20; i++) {
+                for(let i=0; i<data_js.root.result.item.length; i++) {
                     if(count==5) break; 
                     const item= data_js.root.result.item[i];
                     const div= document.createElement('div');
                     const img= document.createElement('img');
                     const h1_1= document.createElement('h1');
                     const h1_2= document.createElement('h1');
-
+                    const regex = /[^0-9]/g;				// 숫자가 아닌 문자열을 선택하는 정규식
                     const title=item.title_info._cdata;
                     const author= item.author_info._cdata;
                     const kdc= item.kdc_code_1s._cdata;
-                    const isbn= item.isbn._cdata;
+                    const isbn= item.isbn._cdata.split(" ")[0].replace(regex, "");
                     if(!isbn){
                         continue;
-                    }
+                    } else console.log('isbn: ', isbn);
                     img.onerror= "this.style.display='none'";
-                    const img_url= await getImage(isbn, item.pub_year_info._text, item.control_no._text);
-                        console.log('img url:', img_url);
-                        img.src= data;
-                        h1_1.textContent= title? title : "?";
-                        h1_2.textContent= author? author : "?";
+                    let img_url;
+                    try{
+                        img_url= await promise_img(isbn, item.pub_year_info._text, item.detail_link._cdata.split(/\&|\=/)[1]).catch((err)=>{});
+                        //https://cover.nl.go.kr/kolis_on/2015/CNTS-00073919725_thumbnail.jpg 날짜 다르고 kolis_on임 reg_date 이용?
+                        //https://cover.nl.go.kr/kolis/20091215/CNTS-00073919725_thumbnail.jpg 원래꺼
+                    } catch (err) { img_url= "http://localhost:8080/public/iconBook.png" }
+                    console.log('img url:', img_url);
+                    img.src= img_url;
+                    h1_1.textContent= title? title : "?";
+                    h1_2.textContent= author? author : "?";
 
                     div.appendChild(img);
                     div.appendChild(h1_1);
                     div.appendChild(h1_2);
-                    div.onClick= selectBook(title, author, kdc, isbn);
+                    //div.onClick= selectBook(title, author, kdc, isbn);
                     result_list_div.appendChild(div);
                     count++;
+                    console.log(i, count);
                 }
+                
             })
         });
         
@@ -72,26 +79,32 @@
             axios.post('/book/admin', { title, author, kdc, isbn }).then((res)=>{ 
                 if(res.data.code!=200) {
                     console.log('책이 제대로 등록되지 않았음', res.data.message);
-                    return;
                 }
-                const book= res.data.payload;
-                document.getElementById('book_title').textContent= book.title;
-                document.getElementById('book_author').textContent= book.author;
-                document.getElementByName('post_book_isbn').value= book.isbn;
-                //document.getElementById('book_img').src= book.title_url;
+                else {
+                    const book= res.data.payload;
+                    document.getElementById('book_title').textContent= book.title;
+                    document.getElementById('book_author').textContent= book.author;
+                    document.getElementByName('post_book_isbn').value= book.isbn;
+                    //document.getElementById('book_img').src= book.title_url;
+                }
+                
             }).catch((err)=>{
                 console.log(err);
             });
         }
 
-        async function getImage(isbn, year, controlno) {
-            axios.post(`/book/image/${isbn}`, { year, controlno}).then((res)=>{
+        const promise_img = function (isbn, year, controlno) {
+            return new Promise((resolve, reject) => {
+                axios.post(`/book/image/${isbn}`, { year, controlno}).then((res)=>{
                 if(res.data.code==200) {
-                    return (res.data.code);
+                    resolve(res.data.imgurl);
                 }
                 else 
-                    return ("http://localhost:8080/public/iconBook.png");
-            }).catch((err)=>{ console.log(err); });
-        }
+                    resolve("http://localhost:8080/public/iconBook.png");
+                }).catch((err)=>{ console.log(err); resolve("http://localhost:8080/public/iconBook.png"); });
+            }).catch((error) => {
+                return error;
+            });
+        };
     </script>
 {% endblock %}
