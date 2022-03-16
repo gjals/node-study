@@ -1,46 +1,35 @@
 {% extends 'layout.html' %}
 {% block content %}
     {% if user %}
-    <div class="post-box">
-        <!--모든 문자를 인코딩하지 않음을 명시 , form이 post일 때 인코딩 방식을 결정-->
-        <form id="post-form" action="/post" method="post" enctype="multipart/form-data">
-            <textarea id="post-text" name="post_text" maxlength="140"></textarea>
-            <img id="post-image-preview" src="" style="width:100px; height:100px; display: none;">
-            <input type="hidden" id="post-image-url" name= "post_image_url">
-            <label id="post-image-label" for="post-image">사진 업로드</label>
-            <input id="post-image" type="file" accept="image/*">
-            <button id="post-form-button" type="submit">제출</button>
-        </form>
-    </div>
     {% endif %}
 
-    <div class="post-list-box">
-        <form id="post-search-form" action="/hashtag">
-            <input type="text" name="post_search_text" placeholder="포스트 검색">
-            <button type="submit">제출</button>
-        </form>
-    </div>
-        {% for i in range(0, posts.length) %}
+    <div>
+        {% for post in posts %}
         <div>
-            {% set post= posts[i] %}
-            <div class="post-auth">{{ post.User.nick }}</div> 
-            <input type="hidden" value="{{ post.User.id }}" id="post-auth-id">
-            {% if not followerIDList.includes(post.User.id) and post.User.id!==user.id %}
-                <button class="post-auth-follow">팔로우</button>
-            {% endif %}
-            <div class="post-content">{{ post.content }}</div>
-            {% if post.dataValues.good %}
-                <h3 id="post-good" style="cursor:pointer">♥</h3>
-            {% else %}
-                <h3 id="post-good" style="cursor:pointer">♡</h3>
-            {% endif %}
-            <h3 id="post-good-count">{{post.UserPosts.length}}</h3>
-            <h1 id="post-id" style="display: none;">{{ post.id }}</h1>
-            {% if post.img %}
-                <img src="{{ post.img }}" style="width:100px; height:100px;">
-            {% endif %}
+            <img src="{{post.Book.title_url}}" style="width: 50px; height: 50px;">
+            {{ post.title }}
+            {{ post.Book.title }}
+            {{ post.Book.author }}
+            {{ post.User.nick }}
+            {{ post.free_text}}
         </div>
         {% endfor %}
+    </div>
+    <a href="/post">포스트 올리기</a>
+    <form href="/search" method="post">
+        <label><input type="checkbox" name="genre" value="all">총류</label>
+        <label><input type="checkbox" name="genre" value="philosophy">철학</label>
+        <label><input type="checkbox" name="genre" value="religion">종교</label>
+        <label><input type="checkbox" name="genre" value="socialScience">사회과학</label>
+        <label><input type="checkbox" name="genre" value="pureScience">순수과학</label>
+        <label><input type="checkbox" name="genre" value="techScience">기술과학</label>
+        <label><input type="checkbox" name="genre" value="art">예술</label>
+        <label><input type="checkbox" name="genre" value="language">언어</label>
+        <label><input type="checkbox" name="genre" value="literature">문학</label>
+        <label><input type="checkbox" name="genre" value="history">역사</label>
+        <input type="text" name="search" placeholder="작가/번역가/유저">
+        <button type="submit">submit</button>
+    </form>
 {% endblock %}
 
 {% block script %}

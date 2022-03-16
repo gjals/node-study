@@ -8,12 +8,12 @@
     <form method="post" action="/post/{{ user.id }}/newPost">
         <div id="result_list">
         </div>
-        <div id="book_box">
+        <div id="book_box" style="border:1px gray solid;">
             <img id="book_img">
             <h1 id="book_title"></h1>
             <h1 id="book_author"></h1>
         </div> 
-        <input type="hidden" name="post_book_isbn"> 
+        <input type="text" name="post_book_id" id="post_book_id"> 
         <textarea name="post_title" id="" cols="30" rows="10" maxlength="40"></textarea>
         <textarea name="post_free_text" id="" cols="30" rows="10" maxlength="200"></textarea>
         <button type="submit">제출</button>
@@ -41,8 +41,8 @@
                     const item= data_js.root.result.item[i];
                     const div= document.createElement('div');
                     const img= document.createElement('img');
-                    const h1_1= document.createElement('h1');
-                    const h1_2= document.createElement('h1');
+                    const h1_1= document.createElement('h5');
+                    const h1_2= document.createElement('h5');
                     const regex = /[^0-9]/g;				// 숫자가 아닌 문자열을 선택하는 정규식
                     const title=item.title_info._cdata;
                     const author= item.author_info._cdata;
@@ -50,23 +50,25 @@
                     const isbn= item.isbn._cdata.split(" ")[0].replace(regex, "");
                     if(!isbn){
                         continue;
-                    } else console.log('isbn: ', isbn);
+                    } else console.log('isbn: ', isbn)
                     img.onerror= "this.style.display='none'";
                     let img_url;
                     try{
-                        img_url= await promise_img(isbn, item.pub_year_info._text, item.detail_link._cdata.split(/\&|\=/)[1]).catch((err)=>{});
-                        //https://cover.nl.go.kr/kolis_on/2015/CNTS-00073919725_thumbnail.jpg 날짜 다르고 kolis_on임 reg_date 이용?
+                        img_url= await promise_img(isbn, item.control_no._text.replace(/[^0-9]/g, "").substr(0, 4), item.detail_link._cdata.split(/\&|\=/)[1], item.control_no._text).catch((err)=>{});
+                        //https://cover.nl.go.kr/kolis_on/2015/CNTS-00073919725_thumbnail.jpg 날짜 다르고 kolis_on임
                         //https://cover.nl.go.kr/kolis/20091215/CNTS-00073919725_thumbnail.jpg 원래꺼
                     } catch (err) { img_url= "http://localhost:8080/public/iconBook.png" }
                     console.log('img url:', img_url);
                     img.src= img_url;
+                    img.style= "width:100px; height:100px;";
                     h1_1.textContent= title? title : "?";
                     h1_2.textContent= author? author : "?";
 
                     div.appendChild(img);
                     div.appendChild(h1_1);
                     div.appendChild(h1_2);
-                    //div.onClick= selectBook(title, author, kdc, isbn);
+                    div.onclick= function () { selectBook(title, author, kdc, isbn, img_url)};
+                    div.style= "cursor:pointer";
                     result_list_div.appendChild(div);
                     count++;
                     console.log(i, count);
@@ -75,17 +77,18 @@
             })
         });
         
-        function selectBook(title, author, kdc, isbn) {
-            axios.post('/book/admin', { title, author, kdc, isbn }).then((res)=>{ 
+        function selectBook(title, author, kdc, isbn, img) {
+            axios.post(`/book/admin/${isbn}/${kdc}`, { title, author, img }).then((res)=>{ 
                 if(res.data.code!=200) {
                     console.log('책이 제대로 등록되지 않았음', res.data.message);
                 }
                 else {
                     const book= res.data.payload;
+                    alert("select: " + book.title);
                     document.getElementById('book_title').textContent= book.title;
                     document.getElementById('book_author').textContent= book.author;
-                    document.getElementByName('post_book_isbn').value= book.isbn;
-                    //document.getElementById('book_img').src= book.title_url;
+                    document.getElementById('book_img').src= book.title_url;
+                    document.getElementById('post_book_id').value= book.id;
                 }
                 
             }).catch((err)=>{
@@ -93,9 +96,9 @@
             });
         }
 
-        const promise_img = function (isbn, year, controlno) {
+        const promise_img = function (isbn, year, viewkey, controlno) {
             return new Promise((resolve, reject) => {
-                axios.post(`/book/image/${isbn}`, { year, controlno}).then((res)=>{
+                axios.post(`/book/image/${isbn}`, { year, viewkey, controlno}).then((res)=>{
                 if(res.data.code==200) {
                     resolve(res.data.imgurl);
                 }

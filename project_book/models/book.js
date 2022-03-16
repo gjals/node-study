@@ -4,11 +4,11 @@ module.exports= class Book extends Sequelize.Model {
     static init(sequelize) {
         return super.init({
             title: {
-                type: Sequelize.STRING(50),
+                type: Sequelize.STRING(200),
                 allowNull: false,
             },
             author: {
-                type: Sequelize.STRING(30),
+                type: Sequelize.STRING(200),
                 allowNull: false,
             },
             title_url: {
@@ -16,11 +16,11 @@ module.exports= class Book extends Sequelize.Model {
                 allowNull: true,
             },
             kdc_code: {
-                type: Sequelize.INTEGER,
+                type: Sequelize.STRING(10),
                 allowNull: false,
             },
             isbn: {
-                type: Sequelize.INTEGER,
+                type: Sequelize.STRING(30),
                 allowNull: false,
                 primarykey: true
             }
@@ -36,6 +36,6 @@ module.exports= class Book extends Sequelize.Model {
         });
     }
     static associate(db) {
-        db.Book.belongsTo(db.Post);
+        db.Book.hasMany(db.Post);
     }
 }

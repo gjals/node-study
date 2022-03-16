@@ -25,6 +25,6 @@ module.exports= class Post extends Sequelize.Model {
     }
     static associate(db) {
         db.Post.belongsTo(db.User);
-        db.Post.hasOne(db.Book);
+        db.Post.belongsTo(db.Book);
     }
 }

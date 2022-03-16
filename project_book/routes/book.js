@@ -5,19 +5,25 @@ const router= express.Router();
 const convert = require('xml-js');
 const request = require('request');
 
-router.post('/admin', isLogin, async (req, res, next) => {
+router.post('/admin/:isbn/:kdc', isLogin, async (req, res, next) => {
     try {   
-        const { title, author, kdc, isbn }= req.body;
+        const { isbn, kdc }= req.params;
+        let { title, author, img }= req.body;
+        console.log('admin 도착', isbn);
         if(!title || !author || !kdc || !isbn)
             return res.json({ code: 404, message: `${req.body.title} ${req.body.author} ${req.body.kdc} ${req.body.isbn} 데이터가 없는 게 있어서 등록 안 됨`});
         //console.log(title, author, kdc, isbn);
-        const book= await Book.findOrCreate({
+        img= (img || "http://localhost:8080/public/iconBook.png");
+        await Book.findOrCreate({
             where: { isbn: isbn },
-            defaults: { title, author, kdc_code: kdc }
+            defaults: { title, author, kdc_code: kdc, title_url: img }
         });
-        return res.json({ code: 200, payload: book });
+        const book1= await Book.findOne({ where: { isbn }});
+        console.log('admin 책 제목', book1.title);
+        return res.json({ code: 200, payload: book1 });
     } catch(err) {
-        //next(err);
+        console.log('admin 실패', err);
+        next(err);
     }
 })
 
@@ -50,12 +56,12 @@ router.post('/search', isLogin, async (req, res, next)=>{
 
 router.post('/image/:isbn', isLogin, async (req, res, next)=>{
     try {
-        const { year, controlno }= req.body;
+        const { year, viewkey, controlno }= req.body;
         const isbn= req.params.isbn;
         
         const url= "https://seoji.nl.go.kr/landingPage/SearchApi.do?cert_key=" + process.env.libraryKey + "&page_size=10&result_style=xml&page_no=1&ebook=y&isbn=" + isbn;
         //console.log(url);
-        let img1, img2;
+        let img1, img2, img3;
         
         const img1_promise= new Promise((resolve, reject) => {
             request.get(url, async (err, res, body)=>{
@@ -92,15 +98,32 @@ router.post('/image/:isbn', isLogin, async (req, res, next)=>{
         }).catch((error) => {
             return error;
         });
-        
+
+        const img3_promise= new Promise((resolve, reject)=>{
+            if(year && controlno) {
+                const img3_url=  "https://cover.nl.go.kr/kolis/" + year + "/" + controlno +  "01_thumbnail.jpg";
+                //console.log(img3_url);
+                request.get(img3_url, async (err, res, body)=> {
+                    if(!err && res.statusCode==200) {
+                        resolve(img3_url);
+                    } else reject();
+                });
+            } else reject();
+        }).catch((error) => {
+            return error;
+        });
+
         try{
             img1_promise.then(async (text1)=>{
                 img1= await text1;
                 img2_promise.then(async (text2)=>{
                     img2= await text2;
-                    const img_url= await (img1 || img2 || "http://localhost:8080/public/iconBook.png");
-                    console.log('이미지 최종 url',img1, img2,  img_url);
-                    return res.json({ code: 200, imgurl: img_url });
+                    img3_promise.then(async (text3)=>{
+                        img3= await text3;
+                        const img_url= await (img2 || img3 || img1 || "http://localhost:8080/public/iconBook.png");
+                        console.log('이미지 최종 url',img2, img1,  img_url);
+                        return res.json({ code: 200, imgurl: img_url });
+                    }).catch(()=>{return res.json({ code: 200, imgurl: img_url });})
                 }).catch(()=>{return res.json({ code: 200, imgurl: img_url });})
             }).catch(()=>{return res.json({ code: 200, imgurl: img_url });})
         } catch (err) {

@@ -27,31 +27,7 @@
                 {% endif %}
             </div>
         </div>
-        <div>
-            {% for post in posts %}
-            <div>
-                {{ post.title }}
-                {{ post.Book.title_url }}
-                {{ post.Book.title }}
-                {{ post.User.nick }}
-            </div>
-            {% endfor %}
-        </div>
-        <a href="/post">포스트 올리기</a>
-        <form href="/search" method="post">
-            <label><input type="checkbox" name="genre" value="all">총류</label>
-            <label><input type="checkbox" name="genre" value="philosophy">철학</label>
-            <label><input type="checkbox" name="genre" value="religion">종교</label>
-            <label><input type="checkbox" name="genre" value="socialScience">사회과학</label>
-            <label><input type="checkbox" name="genre" value="pureScience">순수과학</label>
-            <label><input type="checkbox" name="genre" value="techScience">기술과학</label>
-            <label><input type="checkbox" name="genre" value="art">예술</label>
-            <label><input type="checkbox" name="genre" value="language">언어</label>
-            <label><input type="checkbox" name="genre" value="literature">문학</label>
-            <label><input type="checkbox" name="genre" value="history">역사</label>
-            <input type="text" name="search" placeholder="작가/번역가/유저">
-            <button type="submit">submit</button>
-        </form>
+        
         {% block content %}
         {% endblock %}
         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>

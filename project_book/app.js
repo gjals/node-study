@@ -30,7 +30,7 @@ nunjucks.configure('views', {
     express: app,
     watch: true,
 });
-sequelize.sync({force:false}).then(()=>{console.log('연결 성공');}).catch((err)=>{console.error(err);});
+sequelize.sync({force: false}).then(()=>{console.log('연결 성공');}).catch((err)=>{console.error(err);});
 
 if(process.env.NODE_ENV==='production')
     app.use(morgan('combined'));
