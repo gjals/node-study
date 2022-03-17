@@ -1,13 +1,13 @@
 {% extends "layout.html" %}
 {% block content %}
-<div id="post_box">
-    <form method="post" action="/book/search">
+<div>
+    <form method="post" action="/book/search" id="book_search_box">
         <input type="text" id="search_text" name="search_text" placeholder="제목/작가를 입력하세요">
         <button type="submit">search</button>
     </form>
-    <form method="post" action="/post/{{ user.id }}/newPost">
-        <div id="result_list">
-        </div>
+    <div id="result_list">
+    </div>
+    <form method="post" action="/post/{{ user.id }}/newPost" id="post_box">
         <div id="book_box" style="border:1px gray solid;">
             <img id="book_img">
             <h1 id="book_title"></h1>
@@ -109,5 +109,21 @@
                 return error;
             });
         };
+
+        document.getElementById('post_box').addEventListener('submit', (e)=>{
+            e.preventDefault();
+            const title= e.target.post_title.value;
+            const free_text= e.target.post_free_text.value;
+            const bookid= e.target.post_book_id.value;
+            axios.post('/post/{{user.id}}/newPost', { title, free_text, bookid }).then((res)=>{
+                if(res.data.code==200) {
+                    alert(res.data.message);
+                    location.href='/';
+                }
+                else {
+                    alert(res.data.message);
+                }
+            }).catch((err)=>{ console.log(err); });
+        })
     </script>
 {% endblock %}

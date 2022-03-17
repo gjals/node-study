@@ -11,7 +11,7 @@ router.post('/admin/:isbn/:kdc', isLogin, async (req, res, next) => {
         let { title, author, img }= req.body;
         console.log('admin 도착', isbn);
         if(!title || !author || !kdc || !isbn)
-            return res.json({ code: 404, message: `${req.body.title} ${req.body.author} ${req.body.kdc} ${req.body.isbn} 데이터가 없는 게 있어서 등록 안 됨`});
+            return res.json({ code: 404, message: `${req.body.title} ${req.body.author} ${req.body.kdc} ${req.body.isbn} 책 데이터가 없는 게 있어서 등록 안 됨`});
         //console.log(title, author, kdc, isbn);
         img= (img || "http://localhost:8080/public/iconBook.png");
         await Book.findOrCreate({

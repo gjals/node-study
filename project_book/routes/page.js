@@ -18,6 +18,16 @@ router.get('/post', isLogin, (req, res)=>{
     res.render('post');
 });
 
+router.get('/profile', isLogin, async (req, res)=>{
+    try {
+        const posts= await Post.findAll({ where: { UserId: req.user.id }, include: { model: Book}, order:[[ 'createdAt', 'DESC']]});
+        res.render('profile', { posts });
+    } catch(err) {
+        console.log(err);
+        next(err);
+    }
+})
+
 router.get('/', async (req, res, next) => {
     try {
         const posts= await Post.findAll({

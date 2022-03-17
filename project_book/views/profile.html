@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block content %}
+{% if user %}
+    {% for post in posts %}
+        <img src="{{post.Book.title_url}}" style="width: 50px; height: 50px;">
+        {{ post.Book.title }}
+        {{ post.Book.author }}
+        <form id="post_update_form" action="#">
+            <input type="hidden" name="post_id" value="{{ post.id }}">
+            <input type="text" name="post_update_title" value="{{ post.title }}">
+            <input type="text" name="post_update_free_text" value="{{ post.free_text }}">
+            <button type="submit">수정</button>
+        </form>
+    {% endfor %}
+{% endif %}
+{% endblock %}
+
+{% block script %}
+    <script>
+        document.querySelectorAll('#post_update_form').forEach((element)=>{element.addEventListener('submit', function (e){
+            e.preventDefault();
+            const title= e.target.post_update_title.value;
+            const free_text= e.target.post_update_free_text.value;
+            const postid= e.target.post_id.value;
+            axios.post(`/post/${postid}/update`, { title, free_text }).then((res)=>{
+                alert(res.data.message);
+                if(res.data.code==200) {
+                    location.href='/profile';
+                }
+            }).catch((err)=>{ console.log(err); });
+        })
+    })
+    </script>
+{% endblock %}
