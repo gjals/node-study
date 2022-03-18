@@ -13,6 +13,14 @@
             <button type="submit">수정</button>
         </form>
     {% endfor %}
+    <form id="profile_update_form" action="#">
+        <input type="text" placeholder="{{ user.nick }}" name="user_nick">
+        {% if user.emailProvider=='local' %}
+        <input type="password" placeholder="현재 비밀번호" name="user_password_now">
+        <input type="password" placeholder="새 비밀번호" name="user_password_new">
+        <input type="password" placeholder="비밀번호 확인" name="user_password_new_2">
+        {% endif %}
+    </form>
 {% endif %}
 {% endblock %}
 
@@ -31,5 +39,7 @@
             }).catch((err)=>{ console.log(err); });
         })
     })
+
+    //document.querySelector('#profile_update_form').
     </script>
 {% endblock %}
