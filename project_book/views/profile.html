@@ -11,6 +11,7 @@
             <input type="text" name="post_update_title" value="{{ post.title }}">
             <input type="text" name="post_update_free_text" value="{{ post.free_text }}">
             <button type="submit">수정</button>
+            <button id="post_remove_btn">삭제</button>
         </form>
     {% endfor %}
     <form id="profile_update_form" action="#">
@@ -40,6 +41,34 @@
         })
     })
 
-    //document.querySelector('#profile_update_form').
+    document.querySelector('#profile_update_form').addEventListener('submit', function(e){
+        e.preventDefault();
+        if(e.target.user_password_now!='{{ user.password }}') {
+            return alert("현재 비밀번호와 다릅니다");
+        }
+        if(e.target.user_password_new!=e.target.user_password_now_2)
+            return alert("비밀번호를 다시 확인해주세요");
+        const password= e.target.user_password_new;
+        axios.post(`/post/{{ user.id }}/updatePassword`, { password }).then((res)=>{
+            alert(res.data.message);
+            if(res.data.code==200)
+                location.href="/profile"
+        }).catch((err)=>{ console.log(err); })
+    })
+
+    document.querySelectorAll('#post_remove_btn').forEach((element)=>{
+        element.addEventListener('click', function(e) {
+            const data= confirm('정말로 삭제?');
+            if(data) {
+                const postid= e.target.post_id.value;
+                axios.post(`/post/${postid}/remove`).then((res)=>{
+                alert(res.data.message);
+                if(res.data.code==200) {
+                    location.href='/profile';
+                }
+            }).catch((err)=>{ console.log(err); });
+            }
+        })
+    })
     </script>
 {% endblock %}
