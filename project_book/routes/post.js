@@ -37,4 +37,14 @@ router.post('/:postid/update', isLogin, async (req, res, next)=>{
     }
 })
 
+router.post('/:postid/remove', isLogin, async (req, res, next)=>{
+    try {
+        const post= await Post.remove({ where: { id: req.params.postid }});
+        return res.json({ code: 200, message:'잘 수정됨' });
+    } catch (err) {
+        console.log(err);
+        return res.json({ code: 500, message:'서버 에러'});
+    }
+})
+
 module.exports= router;
