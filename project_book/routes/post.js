@@ -1,9 +1,10 @@
 const express= require('express');
-const { Post, Book }= require('../models');
+const { Post, Book, User }= require('../models');
 const { isLogin }= require('./middlewares');
 const router= express.Router();
 const convert = require('xml-js');
 const request = require('request');
+const Op = require('sequelize').Op; 
 
 router.post('/:id/newPost', isLogin, async (req, res, next)=>{
     try {
@@ -19,7 +20,7 @@ router.post('/:id/newPost', isLogin, async (req, res, next)=>{
         return res.json({ code: 200, message:'등록됨'});
     } catch (err) {
         console.log(err);
-        return res.json({ code: 500, message:'서버 에러'});
+        return res.json({ code: 500, message:'등록 중 서버 에러'});
     }
 })
 
@@ -33,18 +34,44 @@ router.post('/:postid/update', isLogin, async (req, res, next)=>{
         return res.json({ code: 200, message:'잘 수정됨' });
     } catch (err) {
         console.log(err);
-        return res.json({ code: 500, message:'서버 에러'});
+        return res.json({ code: 500, message:'수정 중 서버 에러'});
     }
 })
 
 router.post('/:postid/remove', isLogin, async (req, res, next)=>{
     try {
-        const post= await Post.remove({ where: { id: req.params.postid }});
-        return res.json({ code: 200, message:'잘 수정됨' });
+        const post= await Post.destroy({ where: { id: req.params.postid }});
+        return res.json({ code: 200, message:'잘 삭제됨' });
     } catch (err) {
         console.log(err);
-        return res.json({ code: 500, message:'서버 에러'});
+        return res.json({ code: 500, message:'삭제 중 서버 에러'});
     }
 })
 
+router.post('/genre', async (req, res, next)=>{
+    try {
+        const { genre }= req.body;
+        console.log('장르 배열', genre);
+        const posts= await Post.findAll({ include: { model: Book, where: { kdc_code: { [Op.in] : [genre] }} }, order:[[ 'createdAt', 'DESC']] });
+        return res.render('main', { posts });
+    } catch (err) {
+        console.log(err);
+        return res.json({ code: 500, message:'검색 중 서버 에러'});
+    }
+})
+
+router.post('/search', async (req, res, next)=>{
+    try {
+        const { search_text }= req.body;
+        Promise.all([
+            await Post.findAll({ include: { model: Book, where: { title: search_text }}}),
+            await Post.findAll({ include: { model: Book, where: { author: search_text }}}),
+            await Post.findAll({ include: { model: User, where: { nick: search_text }}}),
+        ]).then((result)=>{ return res.render('main', { posts: result }); });
+        
+    } catch (err) {
+        console.log(err);
+        return res.json({ code: 500, message:'검색 중 서버 에러'});
+    }
+})
 module.exports= router;

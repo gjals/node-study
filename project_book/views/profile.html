@@ -20,6 +20,7 @@
         <input type="password" placeholder="현재 비밀번호" name="user_password_now">
         <input type="password" placeholder="새 비밀번호" name="user_password_new">
         <input type="password" placeholder="비밀번호 확인" name="user_password_new_2">
+        <button type="submit">수정</button>
         {% endif %}
     </form>
 {% endif %}
@@ -58,9 +59,11 @@
 
     document.querySelectorAll('#post_remove_btn').forEach((element)=>{
         element.addEventListener('click', function(e) {
+            e.preventDefault();
             const data= confirm('정말로 삭제?');
             if(data) {
-                const postid= e.target.post_id.value;
+                const postid= e.target.parentNode.post_id.value;
+                alert(postid);
                 axios.post(`/post/${postid}/remove`).then((res)=>{
                 alert(res.data.message);
                 if(res.data.code==200) {

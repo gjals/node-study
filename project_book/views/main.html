@@ -13,18 +13,22 @@
         {% endfor %}
     </div>
     <a href="/post">포스트 올리기</a>
-    <form href="/search" method="post">
-        <label><input type="checkbox" name="genre" value="all">총류</label>
-        <label><input type="checkbox" name="genre" value="philosophy">철학</label>
-        <label><input type="checkbox" name="genre" value="religion">종교</label>
-        <label><input type="checkbox" name="genre" value="socialScience">사회과학</label>
-        <label><input type="checkbox" name="genre" value="pureScience">순수과학</label>
-        <label><input type="checkbox" name="genre" value="techScience">기술과학</label>
-        <label><input type="checkbox" name="genre" value="art">예술</label>
-        <label><input type="checkbox" name="genre" value="language">언어</label>
-        <label><input type="checkbox" name="genre" value="literature">문학</label>
-        <label><input type="checkbox" name="genre" value="history">역사</label>
-        <input type="text" name="search" placeholder="작가/번역가/유저">
+    <form id="post_genre_form" action="/post/genre" method="post">
+        <label><input type="checkbox" name="genre" value="0">총류</label>
+        <label><input type="checkbox" name="genre" value="1">철학</label>
+        <label><input type="checkbox" name="genre" value="2">종교</label>
+        <label><input type="checkbox" name="genre" value="3">사회과학</label>
+        <label><input type="checkbox" name="genre" value="4">순수과학</label>
+        <label><input type="checkbox" name="genre" value="5">기술과학</label>
+        <label><input type="checkbox" name="genre" value="6">예술</label>
+        <label><input type="checkbox" name="genre" value="7">언어</label>
+        <label><input type="checkbox" name="genre" value="">문학</label>
+        <label><input type="checkbox" name="genre" value="9">역사</label>
+        <button type="submit">submit</button>
+    </form>
+
+    <form id="post_search_form" action="/post/search" method="post">
+        <input type="text" name="search_text" placeholder="제목/작가/유저닉네임">
         <button type="submit">submit</button>
     </form>
 {% endblock %}
@@ -70,5 +74,9 @@
                         .catch((err)=>{console.err(err)});
             })
         })
+
+        // document.querySelector('#post_search_form').addEventListener('submit', function (e) {
+
+        // })
     </script>
 {% endblock %} 
