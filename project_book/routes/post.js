@@ -63,6 +63,7 @@ router.post('/genre', async (req, res, next)=>{
 router.post('/search', async (req, res, next)=>{
     try {
         const { search_text }= req.body;
+        
         Promise.all([
             await Post.findAll({ include: { model: Book, where: { title: search_text }}}),
             await Post.findAll({ include: { model: Book, where: { author: search_text }}}),
