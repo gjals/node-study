@@ -87,7 +87,7 @@ router.post('/image/:isbn', isLogin, async (req, res, next)=>{
         
         const img2_promise= new Promise((resolve, reject)=>{
             if(year && controlno) {
-                const img2_url=  "https://cover.nl.go.kr/kolis/" + year + "/" + controlno +  "_thumbnail.jpg";
+                const img2_url=  "http://cover.nl.go.kr/kolis/" + year + "/" + controlno +  "_thumbnail.jpg";
                 console.log(img2_url);
                 request.get(img2_url, async (err, res, body)=> {
                     if(!err && res.statusCode==200) {
@@ -101,12 +101,12 @@ router.post('/image/:isbn', isLogin, async (req, res, next)=>{
 
         const img3_promise= new Promise((resolve, reject)=>{
             if(year && controlno) {
-                const img3_url=  "https://cover.nl.go.kr/kolis/" + year + "/" + controlno +  "01_thumbnail.jpg";
-                //console.log(img3_url);
+                const img3_url=  "http://cover.nl.go.kr/kolis/" + year + "/" + controlno +  "01_thumbnail.jpg";
+                console.log(img3_url);
                 request.get(img3_url, async (err, res, body)=> {
                     if(!err && res.statusCode==200) {
                         resolve(img3_url);
-                    } else reject();
+                    } else { console.log('거절 코드:', err); reject(); }
                 });
             } else reject();
         }).catch((error) => {

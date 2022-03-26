@@ -60,19 +60,47 @@ router.post('/genre', async (req, res, next)=>{
     }
 })
 
+//https://cover.nl.go.kr/kolis/2013/KMO201325311_thumbnail.jpg net::ERR_CERT_DATE_INVALID nl.go.kr 인증서 만료로 이미지가 안뜸
 router.post('/search', async (req, res, next)=>{
     try {
-        const { search_text }= req.body;
+        let { search_text }= req.body;
+        search_text= search_text.trim().split(" ");
+        console.log("search_Text" , search_text);
         
-        Promise.all([
-            await Post.findAll({ include: { model: Book, where: { title: search_text }}}),
-            await Post.findAll({ include: { model: Book, where: { author: search_text }}}),
-            await Post.findAll({ include: { model: User, where: { nick: search_text }}}),
-        ]).then((result)=>{ return res.render('main', { posts: result }); });
-        
+        const set= new Set();
+        let search_array1= [];
+        search_text.forEach(element => {
+            search_array1.push({
+                    [Op.or] : [
+                        { title: { [Op.substring]: element } },
+                        { author: { [Op.substring]: element } }
+                    ]
+                }
+            );
+        });
+        let search_array2= [];
+        search_text.forEach(element => {
+            search_array2.push({
+                nick: { [Op.substring]: element }
+                }
+            );
+        });
+        const posts1= await Post.findAll({ include: [{ model: Book, where: {
+            [Op.or] : search_array1
+        }}, {model: User}]});
+        posts1.forEach(element=> { set.add(element)});
+        const posts2= await Post.findAll({ include: [{ model: User, where: {
+            [Op.or]: search_array2
+        }}, { model: Book}]});
+        posts2.forEach(element=> { set.add(element)});
+        const posts= Array.from(set);
+        console.log('검색된 포스트: ', posts);
+        return res.render('main', { posts });
     } catch (err) {
         console.log(err);
         return res.json({ code: 500, message:'검색 중 서버 에러'});
     }
 })
 module.exports= router;
+
+

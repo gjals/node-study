@@ -30,7 +30,9 @@
     <form id="post_search_form" action="/post/search" method="post">
         <input type="text" name="search_text" placeholder="제목/작가/유저닉네임">
         <button type="submit">submit</button>
+        <button id="post_all_btn" type="button">전체 글 보기</button>
     </form>
+    
 {% endblock %}
 
 {% block script %}
@@ -75,8 +77,8 @@
             })
         })
 
-        // document.querySelector('#post_search_form').addEventListener('submit', function (e) {
-
-        // })
+        document.querySelector('#post_all_btn').addEventListener('click', function (e) {
+            location.href= "/";
+        })
     </script>
 {% endblock %} 

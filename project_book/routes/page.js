@@ -31,14 +31,15 @@ router.get('/profile', isLogin, async (req, res)=>{
 router.get('/', async (req, res, next) => {
     try {
         const posts= await Post.findAll({
-            include: [{
-                model: Book,
-            }, {
-                model: User,
-            }],
-            order:[[ 'createdAt', 'DESC']],
-        });
+                include: [{
+                    model: Book,
+                }, {
+                    model: User,
+                }],
+                order:[[ 'createdAt', 'DESC']],
+            });
         
+            console.log(posts.length);
         console.log('get / render before');
         res.render('main', { posts });
         console.log('get / render end!');
