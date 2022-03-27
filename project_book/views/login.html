@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block content %}
+<form id="profile-login-form" action="/auth/login" method="post">
+    <label for="email">이메일</label>
+    <input type="email" id="email" name="email" required autofocus>
+    <label for="password">비밀번호</label>
+    <input type="password" id="password" name="password" required>
+    <button type="submit" id="profile-login-button">제출</button>
+    <a id="join" href="/join">회원가입</a>
+    <a id="kakao" href="/auth/kakao">카카오톡</a> 
+</form>
+{% endblock %}
+{% block script %}
+<script>
+    //location.href=> href 는 location 객체에 속해있는 프로퍼티로 현재 접속중인 페이지 정보를 갖고 있습니다. 또한 값을 변경할 수 있는 프로퍼티이기 때문에 다른 페이지로 이동하는데도 사용되고 있습니다.
+    window.onload= () => {
+        if(new URL(location.href).searchParams.get('loginError')) {
+            alert('loginError남');
+        }
+    }
+</script>
+{% endblock %}

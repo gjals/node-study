@@ -1,0 +1,22 @@
+html, body { margin:0; padding: 0;  height: 100%; background-color: #E9E5D6; font-family: 'HaenamFont'; }
+
+@font-face {
+    font-family: 'HaenamFont';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2202-2@1.0/HaenamFont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+#right_menu {
+    display: block;
+    text-decoration: none;
+    cursor: pointer;
+    text-align: right;
+    padding: 30px 30px 30px 60px;
+    background-image: url("./main_img.jpg");
+    margin: 20px;
+    font-size: 17px;
+    color: #362706;
+    background-size: cover;
+    width: 300px;
+}
