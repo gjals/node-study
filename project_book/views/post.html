@@ -1,23 +1,28 @@
 {% extends "layout.html" %}
 {% block content %}
-<div>
-    <form method="post" action="/book/search" id="book_search_box">
-        <input type="text" id="search_text" name="search_text" placeholder="제목/작가를 입력하세요">
-        <button type="submit">search</button>
-    </form>
+<div class="post_all">
+    <div class="search_form">
+        <form method="post" action="/book/search" id="book_search_box">
+            <input type="text" id="search_text" name="search_text" placeholder="제목/작가를 입력하세요">
+            <button id="search_btn" type="submit">검색</button>
+        </form>
+    </div>
     <div id="result_list">
     </div>
-    <form method="post" action="/post/{{ user.id }}/newPost" id="post_box">
-        <div id="book_box" style="border:1px gray solid;">
-            <img id="book_img">
-            <h1 id="book_title"></h1>
-            <h1 id="book_author"></h1>
-        </div> 
-        <input type="text" name="post_book_id" id="post_book_id"> 
-        <textarea name="post_title" id="" cols="30" rows="10" maxlength="40"></textarea>
-        <textarea name="post_free_text" id="" cols="30" rows="10" maxlength="200"></textarea>
-        <button type="submit">제출</button>
-    </form> 
+    <div class="post_form">
+        <form method="post" action="/post/{{ user.id }}/newPost" id="post_box">
+            <div id="book_box" style="border:1px gray solid;">
+                <img id="book_img">
+                <h1 id="book_title"></h1>
+                <h1 id="book_author"></h1>
+            </div> 
+            <input type="hidden" name="post_book_id" id="post_book_id"> 
+            <textarea name="post_title" id="" cols="30" rows="10" maxlength="40"></textarea>
+            <textarea name="post_free_text" id="" cols="30" rows="10" maxlength="500"></textarea>
+            <button type="submit">제출</button>
+        </form> 
+    </div>
+    
 </div>
 {% endblock %}
 

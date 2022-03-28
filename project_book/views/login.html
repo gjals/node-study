@@ -1,14 +1,15 @@
 {% extends "layout.html" %}
 {% block content %}
-<form id="profile-login-form" action="/auth/login" method="post">
-    <label for="email">이메일</label>
-    <input type="email" id="email" name="email" required autofocus>
-    <label for="password">비밀번호</label>
-    <input type="password" id="password" name="password" required>
-    <button type="submit" id="profile-login-button">제출</button>
-    <a id="join" href="/join">회원가입</a>
-    <a id="kakao" href="/auth/kakao">카카오톡</a> 
-</form>
+<div class="login_form">
+    <p>로그인</p>
+    <form action="/auth/login" method="post">
+        <input type="email" id="login_text" name="email" placeholder="이메일" required autofocus>
+        <input type="password" id="login_text" name="password" placeholder="비밀번호" required>
+        <button type="submit" id="login_btn">제출</button>
+        <a id="join" href="/join">회원 가입</a>
+        <a id="kakao" href="/auth/kakao">카카오톡 로그인</a> 
+    </form>
+</div>
 {% endblock %}
 {% block script %}
 <script>

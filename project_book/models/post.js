@@ -9,7 +9,7 @@ module.exports= class Post extends Sequelize.Model {
                 allowNull: false,
             },
             free_text: {
-                type: Sequelize.STRING(200),
+                type: Sequelize.STRING(500),
                 allowNull: true,
             }
         }, {

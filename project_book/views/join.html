@@ -1,12 +1,15 @@
 {% extends "layout.html" %}
 {% block content %}
-    <form class="join-form" action="auth/join" method="post">
+<div class="join_form">
+    <p>회원 가입</p>
+    <form action="auth/join" method="post">
         <!--The body of a HTTP post is a key/value hash of all the form controls with a name attribute-->
-        <input id="join-email" type="email" name="join_email" placeholder="email">
-        <input id="join-nick" type="text" name="join_nick" placeholder="nickname">
-        <input id="join-password" type="password" name="join_password" placeholder="password">
-        <button id="join-form-button" type="submit">submit</button>
+        <input id="join_text" type="text" name="join_nick" placeholder="이름">
+        <input id="join_text" type="email" name="join_email" placeholder="이메일">
+        <input id="join_text" type="password" name="join_password" placeholder="비밀번호">
+        <button id="join_btn" type="submit">제출</button>
     </form>
+</div>
 {% endblock %}
 {% block script %}
     <script>

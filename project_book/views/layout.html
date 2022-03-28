@@ -8,17 +8,6 @@
         <link rel="stylesheet" href="/public/main.css">
     </head>
     <body>
-        <div class="total-box">
-            <div class="profile-box">
-                {% if user and user.id %}
-                    <input id="my-id" type="hidden" value="{{user.id}}"> 
-                    <a id="right_menu" href="/profile">{{ user.nick+ ' 님' }}</a>
-                    <a id="right_menu" href="/post">포스트 올리기</a>
-                {% else %}
-                    <a id="right_menu" href="/login">로그인/회원가입</a>
-                {% endif %}
-            </div>
-        </div>
         {% block content %}
         {% endblock %}
         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
