@@ -167,7 +167,7 @@ html, body { margin:0; padding: 0;  height: 100%; background-color: #E9E5D6; fon
     border: 6px solid #AE431E;
 }
 
-#login_btn, #join_btn, #search_btn, #post_btn {
+#login_btn, #join_btn, #search_btn {
     padding: 0px;
     border-radius: 50px;
     color: #AE431E;
@@ -255,6 +255,7 @@ html, body { margin:0; padding: 0;  height: 100%; background-color: #E9E5D6; fon
     margin-top: 7px;
     margin-left: 5px;
     margin-right: 5px;
+    width: 130px;
 }
 
 #search_text {
@@ -289,10 +290,10 @@ html, body { margin:0; padding: 0;  height: 100%; background-color: #E9E5D6; fon
 
 .post_right {
     background-image: url(./post_write_img2.PNG);
-    width: 1000px;
-    height: 700px;
     background-size: contain;
     background-repeat: no-repeat;
+    width: 1000px;
+    height: 700px;
     display: block;
     color: #2F3C4F;
     margin-left: auto;
@@ -303,7 +304,7 @@ html, body { margin:0; padding: 0;  height: 100%; background-color: #E9E5D6; fon
 
 #book_box {
     position: relative;
-    width: 775px;
+    width: 770px;
     height: 135px;
     color: #362706;
     top: 116px;
@@ -316,12 +317,14 @@ html, body { margin:0; padding: 0;  height: 100%; background-color: #E9E5D6; fon
 #book_box>img {
     width: 100px;
     height: 135px;
+    display: block;
 }
 
 #book_box>p{
     position: relative;
     left: 126px;
     top: -100px;
+    display: block;
 }
 
 #post_box>textarea {
@@ -341,6 +344,7 @@ html, body { margin:0; padding: 0;  height: 100%; background-color: #E9E5D6; fon
     margin-right: auto;
     border:none; border-right:0px; border-top:0px; border-left:0px; border-bottom:3px solid #2F3C4F;
     left: 125px;
+    top: 134px;
 }
 
 #post_write_text {
@@ -353,14 +357,16 @@ html, body { margin:0; padding: 0;  height: 100%; background-color: #E9E5D6; fon
 }
 
 #post_btn {
-    border: 4px solid #823216;
-    color: #823216;
-    background-color: #BBBBBB;
-    font-size: 15px;
-    width: 50px;
-    height: 50px;
+    width: 300px;
+    height: 300px;
+    border: none;
+    background-image: url("./stamp.png");
+    background-size: contain;
+    background-repeat: no-repeat;
     margin-left: 10px;
     position: relative;
-    left: 102px;
-    top: 80px;
+    left: 725px;
+    bottom: -68px;
+    background-color: transparent;
+    cursor: pointer;
 }

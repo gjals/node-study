@@ -10,7 +10,6 @@
         </div>
         <div class="result_table">
             <div id="result_list">
-
             </div>
         </div>
     </div>
@@ -25,7 +24,7 @@
                 <input type="hidden" name="post_book_id" id="post_book_id"> 
                 <textarea name="post_title" id="post_write_title" cols="10" rows="40" maxlength="40"></textarea>
                 <textarea name="post_free_text" id="post_write_text" cols="30" rows="30" maxlength="500"></textarea>
-                <button type="submit" id="post_btn">제출</button>
+                <button type="submit" id="post_btn"></button>
             </form> 
         </div>
     </div>
@@ -37,8 +36,6 @@
     
     <script>
         const socket= io.connect('http://localhost:8080/post', { path: '/socket.io'});
-
-        
         socket.on('connect', function () {
             socket.on('searchBooks', async function (data) {
                 const result_list_div= document.getElementById('result_list');
