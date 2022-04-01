@@ -2,6 +2,17 @@
 
 {% block content %}
 {% if user %}
+<span>{{ user.nick }} 님</span><a id="profile-logout" href="/auth/logout">로그아웃</a>
+<form id="profile_update_form" action="#">
+    <input type="text" placeholder="{{ user.nick }}" name="user_nick">
+    {% if user.emailProvider=='local' %}
+    <input type="password" placeholder="현재 비밀번호" name="user_password_now">
+    <input type="password" placeholder="새 비밀번호" name="user_password_new">
+    <input type="password" placeholder="비밀번호 확인" name="user_password_new_2">
+    <button type="submit">수정</button>
+    {% endif %}
+</form>
+
     {% for post in posts %}
         <img src="{{post.Book.title_url}}" style="width: 50px; height: 50px;">
         {{ post.Book.title }}
@@ -14,16 +25,6 @@
             <button id="post_remove_btn">삭제</button>
         </form>
     {% endfor %}
-    <form id="profile_update_form" action="#">
-        <input type="text" placeholder="{{ user.nick }}" name="user_nick">
-        {% if user.emailProvider=='local' %}
-        <input type="password" placeholder="현재 비밀번호" name="user_password_now">
-        <input type="password" placeholder="새 비밀번호" name="user_password_new">
-        <input type="password" placeholder="비밀번호 확인" name="user_password_new_2">
-        <button type="submit">수정</button>
-        {% endif %}
-    </form>
-    <a id="profile-logout" href="/auth/logout">로그아웃</a>
 {% endif %}
 {% endblock %}
 
