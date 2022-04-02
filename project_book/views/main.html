@@ -11,37 +11,53 @@
         {% endif %}
     </div>
 </div>
-    <div>
-        {% for post in posts %}
-        <div class="post">
-            <div id="post_title">{{ post.title }}</div>
-            <div id="post_text">{{ post.free_text}}</div>
-            <img src="{{post.Book.title_url}}" id="post_img">
-            <div id="post_book">{{ post.Book.title }}</div>
-            <div id="post_book">{{ post.Book.author }}</div>
-        </div>
-        {% endfor %}
+<div>
+    {% for post in posts %}
+    <div class="post">
+        <div id="post_title">{{ post.title }}</div>
+        <div id="post_text">{{ post.free_text}}</div>
+        <img src="{{post.Book.title_url}}" id="post_img">
+        <div id="post_book">{{ post.Book.title }}</div>
+        <div id="post_book">{{ post.Book.author }}</div>
     </div>
-    <form id="post_genre_form" action="/post/genre" method="post">
-        <label><input type="checkbox" name="genre" value="0">총류</label>
-        <label><input type="checkbox" name="genre" value="1">철학</label>
-        <label><input type="checkbox" name="genre" value="2">종교</label>
-        <label><input type="checkbox" name="genre" value="3">사회과학</label>
-        <label><input type="checkbox" name="genre" value="4">순수과학</label>
-        <label><input type="checkbox" name="genre" value="5">기술과학</label>
-        <label><input type="checkbox" name="genre" value="6">예술</label>
-        <label><input type="checkbox" name="genre" value="7">언어</label>
-        <label><input type="checkbox" name="genre" value="">문학</label>
-        <label><input type="checkbox" name="genre" value="9">역사</label>
-        <button type="submit">submit</button>
-    </form>
-
-    <form id="post_search_form" action="/post/search" method="post">
-        <input type="text" name="search_text" placeholder="제목/작가/유저닉네임">
-        <button type="submit">submit</button>
-        <button id="post_all_btn" type="button">전체 글 보기</button>
-    </form>
-    
+    {% endfor %}
+</div>
+<div class="post_genre">
+    <div>
+        <form id="post_genre_form" action="/post/genre" method="post">
+            <table>
+                <tr>
+                    <td><label><input type="checkbox" name="genre" value="0">총류</label></td>
+                    <td><label><input type="checkbox" name="genre" value="1">철학</label></td>
+                </tr>
+                <tr>
+                    <td><label><input type="checkbox" name="genre" value="2">종교</label></td>
+                    <td><label><input type="checkbox" name="genre" value="3">사회과학</label></td>
+                </tr>
+                <tr>
+                    <td><label><input type="checkbox" name="genre" value="4">순수과학</label></td>
+                    <td><label><input type="checkbox" name="genre" value="5">기술과학</label></td>
+                </tr>
+                <tr>
+                    <td><label><input type="checkbox" name="genre" value="6">예술</label></td>
+                    <td><label><input type="checkbox" name="genre" value="7">언어</label></td>
+                </tr>
+                <tr>
+                    <td><label><input type="checkbox" name="genre" value="">문학</label></td>
+                    <td><label><input type="checkbox" name="genre" value="9">역사</label></td>
+                </tr>
+            </table>
+            <button type="submit">submit</button>
+        </form>
+    </div>
+    <div>
+        <form id="post_search_form" action="/post/search" method="post">
+            <input type="text" name="search_text" placeholder="제목/작가/유저닉네임">
+            <button type="submit">submit</button>
+            <button id="post_all_btn" type="button">전체 글 보기</button>
+        </form>
+    </div>
+</div>
 {% endblock %}
 
 {% block script %}

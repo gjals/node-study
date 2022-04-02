@@ -20,12 +20,13 @@ html, body { margin:0; padding: 0;  height: 100%; background-color: #E9E5D6; fon
     cursor: pointer;
     text-align: right;
     padding: 30px 30px 30px 60px;
-    background-image: url("./main_img.jpg");
+    background-image: url("./main_img.png");
     margin: 0px;
     font-size: 17px;
     color: #362706;
     background-size: cover;
-    width: 125px;
+    width: 104px;
+    height: 16px;
     position: fixed;
     right: 0px;
     top: 10px;
@@ -76,11 +77,10 @@ html, body { margin:0; padding: 0;  height: 100%; background-color: #E9E5D6; fon
 
 #post_book {
     left: 261px;
-    position: relative;
-    margin: 15px 0px;
+    margin-bottom: 15px;
     position: relative;
     bottom: 106px;
-    height: 40px;
+    height: 37px;
     overflow: hidden;
     color: #464E2E;
     width: 200px;
@@ -167,7 +167,7 @@ html, body { margin:0; padding: 0;  height: 100%; background-color: #E9E5D6; fon
     border: 6px solid #AE431E;
 }
 
-#login_btn, #join_btn, #search_btn {
+#login_btn, #join_btn, #search_btn, #profile_btn {
     padding: 0px;
     border-radius: 50px;
     color: #AE431E;
@@ -175,18 +175,18 @@ html, body { margin:0; padding: 0;  height: 100%; background-color: #E9E5D6; fon
     cursor: pointer;
 }
 
-#login_text::placeholder , #join_text::placeholder, #search_text::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+input::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
     font-family: 'HaenamFont';
     color: #362706;
     opacity: 1; /* Firefox */
 }
 
-#login_text:-ms-input-placeholder, #join_text:-ms-input-placeholder, #search_text:-ms-input-placeholder { /* Internet Explorer 10-11 */
+input:-ms-input-placeholder { /* Internet Explorer 10-11 */
     font-family: 'HaenamFont';
     color: #362706;
 }
 
-#login_text::-ms-input-placeholder, #join_text::-ms-input-placeholder, #search_text::-ms-input-placeholder { /* Microsoft Edge */
+input::-ms-input-placeholder { /* Microsoft Edge */
     font-family: 'HaenamFont';
     color: #362706;
 }
@@ -369,4 +369,148 @@ html, body { margin:0; padding: 0;  height: 100%; background-color: #E9E5D6; fon
     bottom: -68px;
     background-color: transparent;
     cursor: pointer;
+}
+
+.first_profile, .post_edit {
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 700px;
+    height: 600px;
+    display: block;
+    color: #362706;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    font-family: 'HaenamFont';
+    padding-left: 100px;
+}
+
+.first_profile {
+    background-image: url(./profile.PNG);
+    padding-top: 240px;
+    font-size: 16px;
+}
+
+.post_edit {
+    background-image: url(./profile_img.png);
+    padding-top: 120px;
+    height: 720px;
+    font-size: 15px;
+}
+
+#profile_logout{
+    font-size: 40px;
+    width: 500px;
+    height: 53px;
+}
+
+#profile_logout>a{
+    margin-left: 50px;
+    font-size: 30px;
+    color:#AE431E;
+    text-decoration: none;
+}
+
+.first_profile table input{
+    border:none; border-right:0px; border-top:0px; border-left:0px; border-bottom:3px solid #362706;
+    width: 357px;
+    line-height: 28px;
+    font-size: 17px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 21px;
+    display: block;
+    background-color: #E9C891;
+    font-family: 'HaenamFont';
+}
+
+.first_profile table caption {
+    text-align: left;
+    margin-top: 20px;
+}
+
+#profile_btn {
+    border: 4px solid #AE431E;
+    font-size: 18px;
+    width: 50px;
+    height: 50px;
+    font-family: 'HaenamFont';
+    left: 510px;
+    position: relative;
+}
+
+.post_edit table td{
+    padding: 10px;
+}
+
+.post_edit table img{
+    width: 80px;
+    height: 100px;
+}
+
+.post_edit table textarea {
+    border:2px solid #362706;
+    width: 570px;
+    height: 270px;
+    line-height: 20px;
+    font-size: 15px;
+    display: block;
+    background-color: #E9C891;
+    font-family: 'HaenamFont';
+    resize: none;
+}
+
+.post_edit table #post_title_text {
+    width: 570px;
+    height: 26px;
+    border: none;
+    border-bottom: 2px solid #362706;
+}
+
+.post_edit button {
+    background-image: url(./btn.png);
+    width: 109px;
+    height: 78px;
+    margin-left: 129px;
+    color: #AE431E;
+    font-family: 'SANGJUGyeongcheonIsland';
+    font-size: 32px;
+    border: none;
+    background-size: contain;
+    cursor: pointer;
+}
+
+.post_genre {
+    display: block;
+    text-decoration: none;
+    height: 450px;
+    width: 450px;
+    text-align: left;
+    background-image: url("./search.png");
+    font-size: 17px;
+    color: #362706;
+    background-size: cover;
+    position: fixed;
+    left: 0px;
+    top: 10px;
+}
+
+@keyframes slidestart {
+    from {
+        width: 134px;
+        background-position: -42% 100%;
+    }
+    to {
+        width: 500px;
+    }
+}
+
+@keyframes slideend {
+    from {
+        width: 50px;
+    }
+    to {
+        width: 134px;
+        background-position: -42% 100%;
+    }
 }
