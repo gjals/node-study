@@ -47,14 +47,18 @@
                     <td><label><input type="checkbox" name="genre" value="9">역사</label></td>
                 </tr>
             </table>
-            <button type="submit">submit</button>
+            <button type="submit" id="genre_btn">검색</button>
         </form>
     </div>
     <div>
         <form id="post_search_form" action="/post/search" method="post">
-            <input type="text" name="search_text" placeholder="제목/작가/유저닉네임">
-            <button type="submit">submit</button>
-            <button id="post_all_btn" type="button">전체 글 보기</button>
+            <div>
+                <input type="text" name="search_text" placeholder="제목 / 작가 / 유저닉네임">
+            </div>
+            <div>
+                <button id="post_all_btn" type="button">전체 글 보기</button>
+                <button type="submit" id="post_search_btn">검색</button>
+            </div>
         </form>
     </div>
 </div>
