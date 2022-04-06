@@ -521,6 +521,21 @@ input::-ms-input-placeholder { /* Microsoft Edge */
     top: 10px;
     font-family: 'HaenamFont';
     padding: 20px;
+    visibility: hidden;
+    
+}
+
+.post_genre_btn {
+    visibility: visible;
+    cursor: pointer;
+    background-image: url("./search_btn.png");
+    height: 450px;
+    background-size: cover;
+    position: fixed;
+    left: 0px;
+    top: 10px;
+    padding: 20px;
+    width: 100px;
 }
 
 #post_genre_form {

@@ -1,26 +1,30 @@
 {% extends 'layout.html' %}
 {% block content %}
-<div class="total-box">
-    <div class="profile-box">
-        {% if user and user.id %}
-            <input id="my-id" type="hidden" value="{{user.id}}"> 
-            <a class="right_menu" href="/profile">{{ user.nick+ ' 님' }}</a>
-            <a class="right_menu" id="right_menu_two" href="/post">포스트 올리기</a>
-        {% else %}
-            <a class="right_menu" href="/login">로그인/회원가입</a>
-        {% endif %}
+<div class="total_layout">
+    <div class="total-box">
+        <div class="profile-box">
+            {% if user and user.id %}
+                <input id="my-id" type="hidden" value="{{user.id}}"> 
+                <a class="right_menu" href="/profile">{{ user.nick+ ' 님' }}</a>
+                <a class="right_menu" id="right_menu_two" href="/post">포스트 올리기</a>
+            {% else %}
+                <a class="right_menu" href="/login">로그인/회원가입</a>
+            {% endif %}
+        </div>
     </div>
-</div>
-<div>
-    {% for post in posts %}
-    <div class="post">
-        <div id="post_title">{{ post.title }}</div>
-        <div id="post_text">{{ post.free_text}}</div>
-        <img src="{{post.Book.title_url}}" id="post_img">
-        <div id="post_book">{{ post.Book.title }}</div>
-        <div id="post_book">{{ post.Book.author }}</div>
+    <div>
+        {% for post in posts %}
+        <div class="post">
+            <div id="post_title">{{ post.title }}</div>
+            <div id="post_text">{{ post.free_text}}</div>
+            <img src="{{post.Book.title_url}}" id="post_img">
+            <div id="post_book">{{ post.Book.title }}</div>
+            <div id="post_book">{{ post.Book.author }}</div>
+        </div>
+        {% endfor %}
     </div>
-    {% endfor %}
+</div> 
+<div class="post_genre_btn">
 </div>
 <div class="post_genre">
     <div>
@@ -108,6 +112,17 @@
 
         document.querySelector('#post_all_btn').addEventListener('click', function (e) {
             location.href= "/";
+        })
+
+        document.querySelector('.post_genre_btn').addEventListener('click', function (e) {
+            e.target.style.visibility= "hidden";
+            document.querySelector('.post_genre').style.visibility= "visible";
+        })
+
+        document.querySelector('.post_genre').addEventListener('click', e=>{
+            const target= e.target;
+            if(!target.classList.contains("post_genre"))
+                e.target.display= "none";
         })
     </script>
 {% endblock %} 
