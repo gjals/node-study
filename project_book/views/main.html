@@ -24,8 +24,8 @@
         {% endfor %}
     </div>
 </div> 
-<div class="post_genre_btn">
-</div>
+<div class="post_genre_btn">검색</div>
+<div class="background_blur"></div>
 <div class="post_genre">
     <div>
         <form id="post_genre_form" action="/post/genre" method="post">
@@ -115,8 +115,15 @@
         })
 
         document.querySelector('.post_genre_btn').addEventListener('click', function (e) {
-            e.target.style.visibility= "hidden";
+            const background= document.querySelector('.background_blur');
+            background.style.visibility="visible";
             document.querySelector('.post_genre').style.visibility= "visible";
+
+
+            background.addEventListener('click', function (e) {
+                e.target.style.visibility="hidden";
+                document.querySelector('.post_genre').style.visibility="hidden";
+            })
         })
 
         document.querySelector('.post_genre').addEventListener('click', e=>{
