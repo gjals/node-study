@@ -14,12 +14,22 @@
     </div>
     <div>
         {% for post in posts %}
-        <div class="post">
-            <div id="post_title">{{ post.title }}</div>
-            <div id="post_text">{{ post.free_text}}</div>
-            <img src="{{post.Book.title_url}}" id="post_img">
-            <div id="post_book">{{ post.Book.title }}</div>
-            <div id="post_book">{{ post.Book.author }}</div>
+        <div>
+            <div class="post">
+                <div id="post_title">{{ post.title }}</div>
+                <div id="post_text">{{ post.free_text}}</div>
+                <img src="{{post.Book.title_url}}" id="post_img">
+                <div id="post_book">{{ post.Book.title }}</div>
+                <div id="post_book">{{ post.Book.author }}</div>
+            </div>
+            <div class="post_detail_modal">
+                <div id="post_title">{{ post.title }}</div>
+                <img src="{{post.Book.title_url}}" id="post_img">
+                <div id="post_book">{{ post.Book.title }}</div>
+                <div id="post_book">{{ post.Book.author }}</div>
+                <div id="post_text">{{ post.free_text}}</div>
+                <p id="post_index" style="display: none">{{ loop.index }}</p>
+            </div>
         </div>
         {% endfor %}
     </div>
@@ -118,8 +128,6 @@
             const background= document.querySelector('.background_blur');
             background.style.visibility="visible";
             document.querySelector('.post_genre').style.visibility= "visible";
-
-
             background.addEventListener('click', function (e) {
                 e.target.style.visibility="hidden";
                 document.querySelector('.post_genre').style.visibility="hidden";
@@ -131,5 +139,23 @@
             if(!target.classList.contains("post_genre"))
                 e.target.display= "none";
         })
+
+        document.querySelectorAll('.post').forEach((post1)=>{
+            post1.addEventListener('click', (e) => {
+            const background= document.querySelector('.background_blur');
+            const modal= post1.parentNode.children[1];
+            
+            background.style.visibility="visible";
+            modal.style.display= "block";
+            const now_top= (parseInt(modal.lastElementChild.textContent)-1)*410+30;
+            console.log(`${now_top}px`);
+            modal.style.top= `${now_top}px`;
+
+            background.addEventListener('click', function (e) {
+                modal.style.display= "none";
+                background.style.visibility="hidden";
+            })
+        })
+    })
     </script>
 {% endblock %} 

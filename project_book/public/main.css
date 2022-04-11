@@ -576,3 +576,18 @@ input::-ms-input-placeholder { /* Microsoft Edge */
     margin-bottom: 20px;
 }
 
+.post_detail_modal {
+    background-image: url(./post_detail_new.png);
+    width: 722px;
+    height: 663px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    display: none;
+    margin-left: auto;
+    margin-right: auto;
+    z-index: 9;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+}
