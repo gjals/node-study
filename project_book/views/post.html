@@ -4,7 +4,7 @@
     <div class="post_left">
         <div class="search_form">
             <form method="post" action="/book/search" id="book_search_box">
-                <input type="text" id="search_text" name="search_text" placeholder="제목/작가를 입력하세요">
+                <input type="text" id="search_text" name="search_text" placeholder="선택할 책의 제목/작가를 입력하세요">
                 <button id="search_btn" type="submit">검색</button>
             </form>
         </div>
@@ -55,10 +55,10 @@
                     const title=item.title_info._cdata;
                     const author= item.author_info._cdata;
                     const kdc= item.kdc_code_1s._cdata;
-                    const isbn= item.isbn._cdata.split(" ")[0].replace(regex, "");
-                    if(!isbn){
-                        continue;
-                    } else console.log('isbn: ', isbn)
+                    let isbn= null;
+                    if(item.isbn._cdata)
+                        isbn= item.isbn._cdata.split(" ")[0].replace(regex, "");
+                    
                     img.onerror= "this.style.display='none'";
                     let img_url;
                     try{
@@ -75,7 +75,7 @@
                     div.appendChild(img);
                     div.appendChild(h1_1);
                     div.appendChild(h1_2);
-                    div.onclick= function () { selectBook(title, author, kdc, isbn, img_url)};
+                    div.onclick= function () { selectBook(title, author, kdc, img_url)};
                     div.style= "cursor:pointer";
                     result_list_div.appendChild(div);
                     count++;
@@ -85,8 +85,8 @@
             })
         });
         
-        function selectBook(title, author, kdc, isbn, img) {
-            axios.post(`/book/admin/${isbn}/${kdc}`, { title, author, img }).then((res)=>{ 
+        function selectBook(title, author, kdc, img) {
+            axios.post(`/book/admin/${kdc}`, { title, author, img }).then((res)=>{ 
                 if(res.data.code!=200) {
                     console.log('책이 제대로 등록되지 않았음', res.data.message);
                 }
@@ -106,7 +106,7 @@
 
         const promise_img = function (isbn, year, viewkey, controlno) {
             return new Promise((resolve, reject) => {
-                axios.post(`/book/image/${isbn}`, { year, viewkey, controlno}).then((res)=>{
+                axios.post(`/book/image`, { isbn, year, viewkey, controlno}).then((res)=>{
                 if(res.data.code==200) {
                     resolve(res.data.imgurl);
                 }

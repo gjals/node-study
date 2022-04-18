@@ -16,7 +16,7 @@
     //location.href=> href 는 location 객체에 속해있는 프로퍼티로 현재 접속중인 페이지 정보를 갖고 있습니다. 또한 값을 변경할 수 있는 프로퍼티이기 때문에 다른 페이지로 이동하는데도 사용되고 있습니다.
     window.onload= () => {
         if(new URL(location.href).searchParams.get('loginError')) {
-            alert('loginError남');
+            alert(new URL(location.href).searchParams.get('loginError'));
         }
     }
 </script>

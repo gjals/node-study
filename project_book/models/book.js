@@ -19,11 +19,6 @@ module.exports= class Book extends Sequelize.Model {
                 type: Sequelize.STRING(10),
                 allowNull: false,
             },
-            isbn: {
-                type: Sequelize.STRING(30),
-                allowNull: false,
-                primarykey: true
-            }
         }, {
             sequelize,
             timestamps: true, //속성으로 createdAt updateAt 추가함

@@ -54,12 +54,51 @@ html, body { margin:0; padding: 0;  height: 100%; background-color: #E9E5D6; fon
     line-height: 18px;
 }
 
+.post_detail_modal * {
+    position: relative;
+    line-height: 25px;
+    white-space: normal;
+    word-break: break-all;
+    margin-left: 0px;
+}
+
+.post_detail_modal table{
+    top: 200px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 582px;
+}
+
+.post_detail_modal #post_title_modal, #post_book_modal{
+    font-family: 'SANGJUGyeongcheonIsland';
+}
+
+.post_detail_modal #post_title_modal {
+    font-size: 26px;
+    line-height: 28px;
+    margin-bottom: 20px;
+}
+
+.post_detail_modal #post_text{
+    height: 500px;
+}
+
+.post_detail_modal #post_book_modal {
+    text-align: right;
+}
+
+.post_detail_modal #post_img_modal {
+    width: 72px;
+    height: 99px;
+}
+
+
 #post_title {
     font-size: 24px;
-    left: 270px;
+    left: 231px;
     position: relative;
     margin: 0px 0px;
-    width: 300px;
+    width: 381px;
     height: 40px;
     line-height: 28px;
     top: -10px;
@@ -94,17 +133,16 @@ html, body { margin:0; padding: 0;  height: 100%; background-color: #E9E5D6; fon
     left: 160px;
 }
 
-#post_nick {
+#post_user {
     position: relative;
-    left: 300px;
+    left: 0px;
     margin: 0px 0px;
-    position: relative;
-    bottom: 70px;
-    height: 20px;
-    width: 400px;
-    text-align: left;
-
+    text-align: right;
+    width: 600px;
+    top: -30px;
+    font-size: 17px;
 }
+
 
 .login_form, .join_form{
     display: block;
@@ -185,19 +223,15 @@ html, body { margin:0; padding: 0;  height: 100%; background-color: #E9E5D6; fon
     background-color: #F4DFBA;
     cursor: pointer;
     font-family: 'HaenamFont';
-    margin-left: 116px;
-}
-
-#genre_btn {
     margin-left: 278px;
 }
 
-#post_all_btn {
+#post_all_btn, #look_mypost_btn {
     color: #AE431E;
     background-color: #F4DFBA;
     cursor: pointer;
     font-family: 'HaenamFont';
-    margin-left: 50px;
+    margin-left: 14px;
     border: none;
     border-bottom: 2px solid #AE431E;
     font-size: 17px;
@@ -511,7 +545,7 @@ input::-ms-input-placeholder { /* Microsoft Edge */
 .post_genre {
     display: block;
     text-decoration: none;
-    height: 450px;
+    height: 460px;
     width: 450px;
     text-align: left;
     background-image: url("./search_final.png");
@@ -557,7 +591,7 @@ input::-ms-input-placeholder { /* Microsoft Edge */
 
 #post_genre_form {
     position: relative;
-    margin-top: 109px;
+    margin-top: 69px;
 }
 
 #post_genre_form table td {
@@ -578,8 +612,8 @@ input::-ms-input-placeholder { /* Microsoft Edge */
 
 .post_detail_modal {
     background-image: url(./post_detail_new.png);
-    width: 722px;
-    height: 663px;
+    width: 820px;
+    height: 763px;
     background-size: cover;
     background-repeat: no-repeat;
     display: none;
@@ -590,4 +624,13 @@ input::-ms-input-placeholder { /* Microsoft Edge */
     top: 0px;
     left: 0px;
     right: 0px;
+}
+
+.post_last {
+    width: 360px;
+    margin-top: 30px;
+}
+
+.post_last #look_mypost_btn {
+    margin-left: 44px;
 }

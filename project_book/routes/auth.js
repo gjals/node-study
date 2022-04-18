@@ -38,7 +38,7 @@ router.post('/login', isNotLogin, (req, res, next) => {
             return next(authError);
         }
         if(!user) {
-            return res.redirect(`/?loginError=${info.message}`);
+            return res.redirect(`/login/?loginError=${info.message}`);
         }
         return req.login(user, (loginError) => { //뒤에 콜백은 error가 있을 때 실행되는 콜백인가?
             if(loginError) {

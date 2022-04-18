@@ -52,7 +52,7 @@ router.post('/genre', async (req, res, next)=>{
     try {
         const { genre }= req.body;
         console.log('장르 배열', genre);
-        const posts= await Post.findAll({ include: { model: Book, where: { kdc_code: { [Op.in] : [genre] }} }, order:[[ 'createdAt', 'DESC']] });
+        const posts= await Post.findAll({ include: [{ model: Book, where: { kdc_code: { [Op.in] : [genre] }}}, {model: User}] });
         return res.render('main', { posts });
     } catch (err) {
         console.log(err);
@@ -101,6 +101,19 @@ router.post('/search', async (req, res, next)=>{
         return res.json({ code: 500, message:'검색 중 서버 에러'});
     }
 })
+
+router.post('/look_mypost', isLogin, async (req, res, next)=>{
+    try {
+        console.log('post look my post 도착!', req.user.id);
+        const posts= Post.findAll({ include: [{model: User, where: {id: req.user.id}}, {model: Book}]});
+        return res.render('main', { posts });
+    } catch (err) {
+        console.log(err);
+        return res.json({ code: 500, message:'검색 중 서버 에러'});
+    }
+})
+
+
 module.exports= router;
 
 
