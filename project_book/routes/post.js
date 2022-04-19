@@ -102,11 +102,10 @@ router.post('/search', async (req, res, next)=>{
     }
 })
 
-router.post('/look_mypost', isLogin, async (req, res, next)=>{
+router.get('/lookmypost', isLogin, async (req, res, next)=>{
     try {
-        console.log('post look my post 도착!', req.user.id);
-        const posts= Post.findAll({ include: [{model: User, where: {id: req.user.id}}, {model: Book}]});
-        return res.render('main', { posts });
+        const posts= await Post.findAll({ where: { UserId: req.user.id }, include: [{ model: Book}, {model: User}], order:[[ 'createdAt', 'DESC']]});
+        return res.render('main', { posts: posts });
     } catch (err) {
         console.log(err);
         return res.json({ code: 500, message:'검색 중 서버 에러'});

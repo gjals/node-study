@@ -175,9 +175,13 @@
     document.querySelector('#look_mypost_btn').addEventListener('click', ()=>{
         const myid= document.querySelector('#my-id');
         if(myid) {
-            axios.post('/post/look_mypost').then((res)=>{
-                            location.reload(true);
-                        }).catch((err)=>{console.err(err)});
+            location.href="/post/lookmypost"; 
+            //.then((res)=>{res.redirect('/post/lookmypost')}).catch((err)=>{console.log(err)});
+            // try {
+            //     axios.get('/post/lookmypost');
+            // } catch (err) {
+            //     console.log(err);
+            // }
         }
     })
     </script>
