@@ -94,46 +94,6 @@
 
 {% block script %}
     <script>
-        if (document.getElementById('post-image')) {
-            document.getElementById('post-image').addEventListener('change', function(e) { 
-                const formData= new FormData(); //Don't forget the enctype="multipart/form-data" in your form.
-                console.log(this, this.files);
-                formData.append('img', this.files[0]);  //upload.single('img'),  It is important that you use the name field value from the form in your upload function.
-                axios.post('/post/img', formData)
-                    .then((res) => {
-                        document.getElementById('post-image-preview').src= res.data.url; //post하면 res.json({url:'--'})로 데이터 넣어주니 그걸 갖다 씀
-                        document.getElementById('post-image-url').value= res.data.url;
-                        document.getElementById('post-image-preview').style.display= 'inline';
-                    }).catch((err)=>{ console.error(err); });
-            });
-        }
-        //왜 자기 자신이 아닌지 다시 체크하지? 나중에 지워보자!
-        document.querySelectorAll('.post-auth-follow').forEach((auth)=>{
-            auth.addEventListener('click', ()=>{
-                const myid= document.querySelector('#my-id');
-                if(myid) {
-                    const userid= auth.parentNode.querySelector('#post-auth-id').value;
-                    if(userid!==myid.vaule) {
-                        if(confirm('ㄹㅇ할꺼임?')) { //확인, 취소 두 버튼이 뜨고 true, false를 돌려줌 
-                            axios.post(`/user/${userid}/follow`).then(()=>{location.reload();}).catch((err)=>{console.err(err)});
-                        }
-                    }
-                }
-            })
-        })
-    
-        document.querySelectorAll('#post-good').forEach((postgood)=>{
-            postgood.addEventListener('click', ()=>{
-                const myid= document.querySelector('#my-id').value;
-                    const postid= postgood.parentNode.querySelector('#post-id').textContent;
-                    axios.post(`/user/good`, { postid,id:myid })
-                        .then((res)=>{
-                            location.reload(true);
-                        })
-                        .catch((err)=>{console.err(err)});
-            })
-        })
-
         document.querySelector('#post_all_btn').addEventListener('click', function (e) {
             location.href= "/";
         })
@@ -162,7 +122,6 @@
             background.style.visibility="visible";
             modal.style.display= "block";
             const now_top= (parseInt(modal.lastElementChild.textContent)-1)*410+30;
-            console.log(`${now_top}px`);
             modal.style.top= `${now_top}px`;
 
             background.addEventListener('click', function (e) {

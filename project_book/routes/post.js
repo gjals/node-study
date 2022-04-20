@@ -26,7 +26,7 @@ router.post('/:id/newPost', isLogin, async (req, res, next)=>{
 
 router.post('/:postid/update', isLogin, async (req, res, next)=>{
     try {
-        console.log("update 도착");
+        //console.log("update 도착");
         const post= await Post.update({
             title: req.body.title,
             free_text: req.body.free_text,
@@ -51,7 +51,7 @@ router.post('/:postid/remove', isLogin, async (req, res, next)=>{
 router.post('/genre', async (req, res, next)=>{
     try {
         const { genre }= req.body;
-        console.log('장르 배열', genre);
+        //console.log('장르 배열', genre);
         const posts= await Post.findAll({ include: [{ model: Book, where: { kdc_code: { [Op.in] : [genre] }}}, {model: User}] });
         return res.render('main', { posts });
     } catch (err) {
@@ -65,7 +65,7 @@ router.post('/search', async (req, res, next)=>{
     try {
         let { search_text }= req.body;
         search_text= search_text.trim().split(" ");
-        console.log("search_Text" , search_text);
+        //console.log("search_Text" , search_text);
         
         const set= new Set();
         let search_array1= [];
@@ -94,7 +94,7 @@ router.post('/search', async (req, res, next)=>{
         }}, { model: Book}]});
         posts2.forEach(element=> { set.add(element)});
         const posts= Array.from(set);
-        console.log('검색된 포스트: ', posts);
+        //console.log('검색된 포스트: ', posts);
         return res.render('main', { posts });
     } catch (err) {
         console.log(err);

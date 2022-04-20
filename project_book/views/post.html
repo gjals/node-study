@@ -42,7 +42,7 @@
                 while ( result_list_div.hasChildNodes() ) { result_list_div.removeChild( result_list_div.firstChild ); }
                 const data_js= JSON.parse(data);
             
-                alert(data_js.root.result.item[0]);
+                //alert(data_js.root.result.item[0]);
                 let count=0;
                 for(let i=0; i<data_js.root.result.item.length; i++) {
                     if(count==5) break; 
@@ -66,7 +66,7 @@
                         //https://cover.nl.go.kr/kolis_on/2015/CNTS-00073919725_thumbnail.jpg 날짜 다르고 kolis_on임
                         //https://cover.nl.go.kr/kolis/20091215/CNTS-00073919725_thumbnail.jpg 원래꺼
                     } catch (err) { img_url= "http://localhost:8080/public/iconBook.png" }
-                    console.log('img url:', img_url);
+                    //console.log('img url:', img_url);
                     img.src= img_url;
                     img.style= "width:80px; height:100px;";
                     h1_1.textContent= title? title : "?";
@@ -92,7 +92,7 @@
                 }
                 else {
                     const book= res.data.payload;
-                    alert("select: " + book.title);
+                    alert("책이 선택되었습니다");
                     document.getElementById('book_title').textContent= book.title;
                     document.getElementById('book_author').textContent= book.author;
                     document.getElementById('book_img').src= book.title_url;

@@ -43,11 +43,7 @@ router.get('/', async (req, res, next) => {
                 }],
                 order:[[ 'createdAt', 'DESC']],
             });
-        
-            console.log(posts.length);
-        console.log('get / render before');
         res.render('main', { posts });
-        console.log('get / render end!');
     } catch (err) {
         console.log(err);
         next(err);

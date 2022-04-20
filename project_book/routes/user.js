@@ -29,7 +29,7 @@ router.post('/:userid/updatePassword', isLogin, async (req, res, next)=>{
         if(req.body.password1!==req.body.password2)
             return res.json({ code: 500, message:'비밀번호를 다시 확인해주세요'});
 
-        console.log(req.body.password1 + " " + req.body.password2);
+        //console.log(req.body.password1 + " " + req.body.password2);
         const user= await User.findOne({ where: { id: req.params.userid }});
         const hash= await bcrypt.hash(req.body.password1, 12);
         if(user) {
