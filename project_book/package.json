@@ -4,7 +4,10 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "nodemon app"
+    "start": "pm2 start app.js",
+    "dev": "nodemon server",
+    "stop": "pm2 kill",
+    "test": "jest"
   },
   "author": "min",
   "license": "ISC",
