@@ -21,7 +21,7 @@ module.exports = {
         "database": "projectbook",
         "host": "projectbook.cgbl4edwm13h.ap-northeast-2.rds.amazonaws.com",
         "dialect": "mysql",
-        logging: false,
-	    "rds_port": "3306"
+        "logging": "false",
+        "port": "3306"
     }
 }
