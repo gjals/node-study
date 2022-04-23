@@ -5,9 +5,8 @@
   "main": "app.js",
   "scripts": {
     "start": "pm2 start app.js",
-    "dev": "nodemon server",
-    "stop": "pm2 kill",
-    "test": "jest"
+    "test": "nodemon app",
+    "stop": "pm2 kill"
   },
   "author": "min",
   "license": "ISC",
