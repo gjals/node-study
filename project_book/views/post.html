@@ -35,7 +35,7 @@
     <script src="/socket.io/socket.io.js"></script>
     
     <script>
-        const socket= io.connect('http://localhost:8080/post', { path: '/socket.io'});
+        const socket= io.connect('http://13.125.37.134:8080/post', { path: '/socket.io'});
         socket.on('connect', function () {
             socket.on('searchBooks', async function (data) {
                 const result_list_div= document.getElementById('result_list');
@@ -65,7 +65,7 @@
                         img_url= await promise_img(isbn, item.control_no._text.replace(/[^0-9]/g, "").substr(0, 4), item.detail_link._cdata.split(/\&|\=/)[1], item.control_no._text).catch((err)=>{});
                         //https://cover.nl.go.kr/kolis_on/2015/CNTS-00073919725_thumbnail.jpg 날짜 다르고 kolis_on임
                         //https://cover.nl.go.kr/kolis/20091215/CNTS-00073919725_thumbnail.jpg 원래꺼
-                    } catch (err) { img_url= "http://localhost:8080/public/iconBook.png" }
+                    } catch (err) { img_url= "http://13.125.37.134:8080/public/iconBook.png" }
                     //console.log('img url:', img_url);
                     img.src= img_url;
                     img.style= "width:80px; height:100px;";
@@ -111,8 +111,8 @@
                     resolve(res.data.imgurl);
                 }
                 else 
-                    resolve("http://localhost:8080/public/iconBook.png");
-                }).catch((err)=>{ console.log(err); resolve("http://localhost:8080/public/iconBook.png"); });
+                    resolve("http://13.125.37.134:8080/public/iconBook.png");
+                }).catch((err)=>{ console.log(err); resolve("http://13.125.37.134:8080/public/iconBook.png"); });
             }).catch((error) => {
                 return error;
             });

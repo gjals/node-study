@@ -13,7 +13,7 @@ router.post('/admin/:kdc', isLogin, async (req, res, next) => {
         if(!title || !author || !kdc)
             return res.json({ code: 404, message: `${req.body.title} ${req.body.author} ${req.body.kdc}책 데이터가 없는 게 있어서 등록 안 됨`});
         //console.log(title, author, kdc);
-        img= (img || "http://localhost:8080/public/iconBook.png");
+        img= (img || "http://13.125.37.134:8080/public/iconBook.png");
 
         const book1= await Book.findOrCreate({
             where: { title: title, author: author },
@@ -125,7 +125,7 @@ router.post('/image/', isLogin, async (req, res, next)=>{
                         img2= await text2;
                         img3_promise.then(async (text3)=>{
                             img3= await text3;
-                            const img_url= await (img2 || img3 || img1 || "http://localhost:8080/public/iconBook.png");
+                            const img_url= await (img2 || img3 || img1 || "http://13.125.37.134:8080/public/iconBook.png");
                             //console.log('이미지 최종 url',img2, img1,  img_url);
                             return res.json({ code: 200, imgurl: img_url });
                         }).catch(()=>{return res.json({ code: 200, imgurl: img_url });})
@@ -136,7 +136,7 @@ router.post('/image/', isLogin, async (req, res, next)=>{
                     img2= await text2;
                     img3_promise.then(async (text3)=>{
                         img3= await text3;
-                        const img_url= await (img2 || img3 || "http://localhost:8080/public/iconBook.png");
+                        const img_url= await (img2 || img3 || "http://13.125.37.134:8080/public/iconBook.png");
                         //console.log('이미지 최종 url', img_url);
                         return res.json({ code: 200, imgurl: img_url });
                     }).catch(()=>{return res.json({ code: 200, imgurl: img_url });})
