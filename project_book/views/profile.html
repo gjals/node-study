@@ -17,7 +17,6 @@
         <button type="submit" id="profile_btn">수정</button>
     </div>
     </form>
-    {% if user.emailProvider=='local' %}
     <form class="password_update_form" action="#">
         <table>
             <caption>비밀번호 변경</caption>
@@ -33,7 +32,6 @@
         </table>
         <button type="submit" id="profile_btn">수정</button>
     </form>
-    {% endif %}
 </div>
     {% for post in posts %}
     <div class="post_edit">
@@ -64,58 +62,59 @@
 
 {% block script %}
     <script>
-        document.querySelectorAll('#post_update_form').forEach((element)=>{element.addEventListener('submit', function (e){
+    window.onload= () => {
+        if('{{ user.emailProvider }}'=='kakao') {
+            document.querySelector('.password_update_form').style.display= 'none';
+        }
+    }
+
+    document.querySelectorAll('#post_update_form').forEach((element)=>{element.addEventListener('submit', function (e){
             e.preventDefault();
             const title= e.target.post_update_title.value;
             const free_text= e.target.post_update_free_text.value;
-            const postid= e.target.post_id.value;
-            axios.post(`/post/${postid}/update`, { title, free_text }).then((res)=>{
+            const id= e.target.post_id.value;
+            axios.post(`/post/update`, { title, free_text, id }).then((res)=>{
                 alert(res.data.message);
                 if(res.data.code==200) {
                     location.href='/profile';
                 }
             }).catch((err)=>{ console.log(err); });
+        })
+    })
+
+    document.querySelectorAll('#post_remove_btn').forEach((element)=>{
+        element.addEventListener('click', function(e) {
+            if(confirm('정말로 삭제하시겠습니까?')) {
+                const id= e.target.parentNode.post_id.value;
+                axios.post(`/post/remove`, { id }).then((res)=>{
+                    alert(res.data.message);
+                    if(res.data.code==200) 
+                        location.href='/profile';
+                }).catch((err)=>{ console.log(err); });
+            }
         })
     })
 
     document.querySelector('.nick_update_form').addEventListener('submit', function(e){
         e.preventDefault();
         const nick= e.target.user_nick.value;
-        axios.post(`/user/{{ user.id }}/updateNick`, { nick }).then((res)=>{
+        axios.post(`/user/update/nick`, { nick }).then((res)=>{
             alert(res.data.message);
             if(res.data.code==200)
                 location.href="/profile"
         }).catch((err)=>{ console.log(err); })
     })
-
 
     document.querySelector('.password_update_form').addEventListener('submit', function(e){
         e.preventDefault();
         const pass_now= e.target.user_password_now.value;
         const password1= e.target.user_password_new.value;
         const password2= e.target.user_password_new_2.value;
-        axios.post(`/user/{{ user.id }}/updatePassword`, { pass_now, password1, password2 }).then((res)=>{
+        axios.post(`/user//update/password`, { pass_now, password1, password2 }).then((res)=>{
             alert(res.data.message);
             if(res.data.code==200)
-                location.href="/profile"
+                location.href='/profile';
         }).catch((err)=>{ console.log(err); })
-    })
-
-    document.querySelectorAll('#post_remove_btn').forEach((element)=>{
-        element.addEventListener('click', function(e) {
-            e.preventDefault();
-            const data= confirm('정말로 삭제하시겠습니까?');
-            if(data) {
-                const postid= e.target.parentNode.post_id.value;
-                alert(postid);
-                axios.post(`/post/${postid}/remove`).then((res)=>{
-                alert(res.data.message);
-                if(res.data.code==200) {
-                    location.href='/profile';
-                }
-            }).catch((err)=>{ console.log(err); });
-            }
-        })
     })
     </script>
 {% endblock %}

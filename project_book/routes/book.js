@@ -3,28 +3,22 @@ const { Post, Book }= require('../models');
 const { isLogin }= require('./middlewares');
 const router= express.Router();
 const convert = require('xml-js');
+const logger= require('../logger')
 const request = require('request');
 
-router.post('/admin/:kdc', isLogin, async (req, res, next) => {
+router.post('/register', isLogin, async (req, res, next) => {
     try {   
-        const { kdc }= req.params;
-        let { title, author, img }= req.body;
-        
+        const { title, author, kdc, img }= req.body;
         if(!title || !author || !kdc)
-            return res.json({ code: 404, message: `${req.body.title} ${req.body.author} ${req.body.kdc}책 데이터가 없는 게 있어서 등록 안 됨`});
-        //console.log(title, author, kdc);
-        img= (img || "http://13.125.37.134:8080/public/iconBook.png");
-
-        const book1= await Book.findOrCreate({
-            where: { title: title, author: author },
+            return res.json({ code: 404, message: `책의 제목이나 작가, kdc 코드 등 부족한 데이터가 있어서 등록할 수 없습니다`});
+        const book= await Book.findOrCreate({
+            where: { title, author },
             defaults: { title, author, kdc_code: kdc, title_url: img }
         });
-        
-        //console.log('admin 책 제목', book1[0]);
-        return res.json({ code: 200, payload: book1[0] });
+        return res.json({ code: 200, book: book[0], message: '책이 선택되었습니다' });
     } catch(err) {
-        console.log('admin 실패', err);
-        next(err);
+        console.log(err);
+        return res.json({ code:404, message: '책이 제대로 등록되지 못했습니다'});
     }
 })
 
@@ -32,41 +26,38 @@ router.post('/search', isLogin, async (req, res, next)=>{
     try {
         const text= encodeURIComponent(req.body.search_text);
         const url= "https://www.nl.go.kr/NL/search/openApi/search.do?key=" + process.env.libraryKey + "&apiType=xml&pageNum=1&pageSize=20&category=%EB%8F%84%EC%84%9C&kwd=" + text;
-        //console.log(url);
-        const post= req.app.get('io').of('/post').to(req.sessionID);
+        const socket= req.app.get('io').of('/post').to(req.sessionID);
         request.get(url, async (err, res, body) =>{
             if(err) {
-                console.log(`err => ${err}`);
+                logger.info(`err => ${err}`);
                 next(err);
             }
             else {
-                if(res.statusCode == 200){
-                    const xml= body;
-                    //console.log(`body data => ${xml}`)
+                if(res.statusCode == 200) {
+                    const xml= await body;
                     const xmlToJson= await convert.xml2json(xml, {compact: true, spaces: 2});
-                    //console.log('json data', xmlToJson);
-                    await post.emit('searchBooks', xmlToJson);
+                    await socket.emit('search_books', xmlToJson);
                 }
             }
         });
         
     } catch (err) {
-        //next(err);
+        next(err);
     }
 })
 
-router.post('/image/', isLogin, async (req, res, next)=>{
+router.post('/search/image', isLogin, async (req, res, next)=>{
     try {
-        const { isbn, year, viewkey, controlno }= req.body;
+        const { isbn, viewkey, controlno }= req.body;
+        const year= controlno.replace(regex, "").substr(0, 4);
         let img1_promise;
         if(isbn) {
             const url= "https://seoji.nl.go.kr/landingPage/SearchApi.do?cert_key=" + process.env.libraryKey + "&page_size=10&result_style=xml&page_no=1&isbn=" + isbn;
-            //console.log(url);
-
+            console.log(url);
             img1_promise= new Promise((resolve, reject) => {
                 request.get(url, async (err, res, body)=>{
                     if(err) {
-                        console.log(err);
+                        logger.info(err);
                         reject();
     
                     } else {
@@ -92,7 +83,8 @@ router.post('/image/', isLogin, async (req, res, next)=>{
         const img2_promise= new Promise((resolve, reject)=>{
             if(year && controlno) {
                 const img2_url=  "http://cover.nl.go.kr/kolis/" + year + "/" + controlno +  "_thumbnail.jpg";
-                //console.log(img2_url);
+                console.log(img2_url);
+                //logger.info(img2_url);
                 request.get(img2_url, async (err, res, body)=> {
                     if(!err && res.statusCode==200) {
                         resolve(img2_url);
@@ -106,11 +98,11 @@ router.post('/image/', isLogin, async (req, res, next)=>{
         const img3_promise= new Promise((resolve, reject)=>{
             if(year && controlno) {
                 const img3_url=  "http://cover.nl.go.kr/kolis/" + year + "/" + controlno +  "01_thumbnail.jpg";
-                //console.log(img3_url);
+                //logger.info(img3_url);
                 request.get(img3_url, async (err, res, body)=> {
                     if(!err && res.statusCode==200) {
                         resolve(img3_url);
-                    } else { console.log('거절 코드:', err); reject(); }
+                    } else { logger.info('거절 코드:', err); reject(); }
                 });
             } else reject();
         }).catch((error) => {
@@ -126,7 +118,7 @@ router.post('/image/', isLogin, async (req, res, next)=>{
                         img3_promise.then(async (text3)=>{
                             img3= await text3;
                             const img_url= await (img2 || img3 || img1 || "http://13.125.37.134:8080/public/iconBook.png");
-                            //console.log('이미지 최종 url',img2, img1,  img_url);
+                            //logger.info('이미지 최종 url',img2, img1,  img_url);
                             return res.json({ code: 200, imgurl: img_url });
                         }).catch(()=>{return res.json({ code: 200, imgurl: img_url });})
                     }).catch(()=>{return res.json({ code: 200, imgurl: img_url });})
@@ -137,7 +129,7 @@ router.post('/image/', isLogin, async (req, res, next)=>{
                     img3_promise.then(async (text3)=>{
                         img3= await text3;
                         const img_url= await (img2 || img3 || "http://13.125.37.134:8080/public/iconBook.png");
-                        //console.log('이미지 최종 url', img_url);
+                        //logger.info('이미지 최종 url', img_url);
                         return res.json({ code: 200, imgurl: img_url });
                     }).catch(()=>{return res.json({ code: 200, imgurl: img_url });})
                 }).catch(()=>{return res.json({ code: 200, imgurl: img_url });})
@@ -148,9 +140,11 @@ router.post('/image/', isLogin, async (req, res, next)=>{
         
         
     } catch (err) {
-        console.log(err);
+        logger.info(err);
         return res.json({ code: 500, message:'서버 에러'});
     }
 })
+
+
 
 module.exports= router;

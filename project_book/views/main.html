@@ -49,7 +49,7 @@
 <div class="background_blur"></div>
 <div class="post_genre">
     <div>
-        <form id="post_genre_form" action="/post/genre" method="post">
+        <form id="post_genre_form" action="/post/search/genre" method="post">
             <table>
                 <tr>
                     <td><label><input type="checkbox" name="genre" value="0">총류</label></td>
@@ -76,7 +76,7 @@
         </form>
     </div>
     <div>
-        <form id="post_search_form" action="/post/search" method="post">
+        <form id="post_search_form" action="/post/search/text" method="post">
             <div>
                 <input type="text" name="search_text" placeholder="제목 / 작가 / 유저닉네임">
             </div>
@@ -94,53 +94,43 @@
 
 {% block script %}
     <script>
-        document.querySelector('#post_all_btn').addEventListener('click', function (e) {
-            location.href= "/";
+    document.querySelector('.post_genre_btn').addEventListener('click', function (e) {
+        const background= document.querySelector('.background_blur');
+        const genre= document.querySelector('.post_genre');
+        background.style.display="block";
+        genre.style.display= "block";
+        background.addEventListener('click', function (e) {
+            background.style.display="none";
+            genre.style.display="none";
         })
+    })
 
-        document.querySelector('.post_genre_btn').addEventListener('click', function (e) {
-            const background= document.querySelector('.background_blur');
-            background.style.visibility="visible";
-            document.querySelector('.post_genre').style.visibility= "visible";
-            background.addEventListener('click', function (e) {
-                e.target.style.visibility="hidden";
-                document.querySelector('.post_genre').style.visibility="hidden";
-            })
-        })
-
-        document.querySelector('.post_genre').addEventListener('click', e=>{
-            const target= e.target;
-            if(!target.classList.contains("post_genre"))
-                e.target.display= "none";
-        })
-
-        document.querySelectorAll('.post').forEach((post1)=>{
-            post1.addEventListener('click', (e) => {
+    document.querySelectorAll('.post').forEach((post1)=>{
+        post1.addEventListener('click', (e) => {
             const background= document.querySelector('.background_blur');
             const modal= post1.parentNode.children[1];
-            
-            background.style.visibility="visible";
+            background.style.display="block";
             modal.style.display= "block";
             const now_top= (parseInt(modal.lastElementChild.textContent)-1)*410+30;
             modal.style.top= `${now_top}px`;
-
             background.addEventListener('click', function (e) {
                 modal.style.display= "none";
-                background.style.visibility="hidden";
+                background.style.display="none";
             })
         })
     })
 
-    document.querySelector('#look_mypost_btn').addEventListener('click', ()=>{
+    document.querySelector('#post_all_btn').addEventListener('click', function (e) {
+        location.href= "/";
+    })
+
+    document.querySelector('#look_mypost_btn').addEventListener('click', function (e) {
         const myid= document.querySelector('#my-id');
-        if(myid) {
-            location.href="/post/lookmypost"; 
-            //.then((res)=>{res.redirect('/post/lookmypost')}).catch((err)=>{console.log(err)});
-            // try {
-            //     axios.get('/post/lookmypost');
-            // } catch (err) {
-            //     console.log(err);
-            // }
+        if(myid) 
+            location.href="/post/search/mypost"; 
+        else {
+            alert("로그인을 먼저 해주세요");
+            location.href= "/";
         }
     })
     </script>

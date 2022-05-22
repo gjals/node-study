@@ -543,7 +543,7 @@ input::-ms-input-placeholder { /* Microsoft Edge */
 }
 
 .post_genre {
-    display: block;
+    display: none;
     text-decoration: none;
     height: 460px;
     width: 450px;
@@ -557,7 +557,6 @@ input::-ms-input-placeholder { /* Microsoft Edge */
     top: 10px;
     font-family: 'HaenamFont';
     padding: 20px;
-    visibility: hidden;
     z-index: 9;
 }
 
@@ -580,12 +579,11 @@ input::-ms-input-placeholder { /* Microsoft Edge */
 
 .background_blur{
     width: 100%;
-    visibility: hidden;
     height: 100%;
     backdrop-filter: blur(4px);
     z-index: 4;
     position: fixed;
-    display: block;
+    display: none;
     top: 0px;
 }
 
