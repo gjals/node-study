@@ -46,99 +46,26 @@ router.post('/search', isLogin, async (req, res, next)=>{
     }
 })
 
+const return_book_img= async function (url) {
+    return new Promise(function (resolve, reject) {
+        request(url, function (error, res, body) {
+            if (!error && res.statusCode == 200) {
+                resolve(url);
+            } else {
+                resolve(null);
+            }
+        });
+    });
+}
+
 router.post('/search/image', isLogin, async (req, res, next)=>{
     try {
-        const { isbn, viewkey, controlno }= req.body;
-        const year= controlno.replace(regex, "").substr(0, 4);
-        let img1_promise;
-        if(isbn) {
-            const url= "https://seoji.nl.go.kr/landingPage/SearchApi.do?cert_key=" + process.env.libraryKey + "&page_size=10&result_style=xml&page_no=1&isbn=" + isbn;
-            console.log(url);
-            img1_promise= new Promise((resolve, reject) => {
-                request.get(url, async (err, res, body)=>{
-                    if(err) {
-                        logger.info(err);
-                        reject();
-    
-                    } else {
-                        if(res.statusCode==200) {
-                            const xml= body;
-                            const xmlToJson= await convert.xml2json(xml, {compact: true, spaces: 2});
-                            const json= await JSON.parse(xmlToJson);
-                            if(json.o.docs.e && json.o.docs.e.TITLE_URL) {
-                                resolve(json.o.docs.e.TITLE_URL._text);
-                            }
-                            else reject();
-                        }
-                        else reject();
-                    }
-                });
-            }).catch((error) => {
-                return error;
-            });
-        }
-        
-        let img1, img2, img3;
-
-        const img2_promise= new Promise((resolve, reject)=>{
-            if(year && controlno) {
-                const img2_url=  "http://cover.nl.go.kr/kolis/" + year + "/" + controlno +  "_thumbnail.jpg";
-                console.log(img2_url);
-                //logger.info(img2_url);
-                request.get(img2_url, async (err, res, body)=> {
-                    if(!err && res.statusCode==200) {
-                        resolve(img2_url);
-                    } else reject();
-                });
-            } else reject();
-        }).catch((error) => {
-            return error;
-        });
-
-        const img3_promise= new Promise((resolve, reject)=>{
-            if(year && controlno) {
-                const img3_url=  "http://cover.nl.go.kr/kolis/" + year + "/" + controlno +  "01_thumbnail.jpg";
-                //logger.info(img3_url);
-                request.get(img3_url, async (err, res, body)=> {
-                    if(!err && res.statusCode==200) {
-                        resolve(img3_url);
-                    } else { logger.info('거절 코드:', err); reject(); }
-                });
-            } else reject();
-        }).catch((error) => {
-            return error;
-        });
-
-        try{
-            if(isbn) {
-                img1_promise.then(async (text1)=>{
-                    img1= await text1;
-                    img2_promise.then(async (text2)=>{
-                        img2= await text2;
-                        img3_promise.then(async (text3)=>{
-                            img3= await text3;
-                            const img_url= await (img2 || img3 || img1 || "http://13.125.37.134:8080/public/iconBook.png");
-                            //logger.info('이미지 최종 url',img2, img1,  img_url);
-                            return res.json({ code: 200, imgurl: img_url });
-                        }).catch(()=>{return res.json({ code: 200, imgurl: img_url });})
-                    }).catch(()=>{return res.json({ code: 200, imgurl: img_url });})
-                }).catch(()=>{return res.json({ code: 200, imgurl: img_url });})
-            } else {
-                img2_promise.then(async (text2)=>{
-                    img2= await text2;
-                    img3_promise.then(async (text3)=>{
-                        img3= await text3;
-                        const img_url= await (img2 || img3 || "http://13.125.37.134:8080/public/iconBook.png");
-                        //logger.info('이미지 최종 url', img_url);
-                        return res.json({ code: 200, imgurl: img_url });
-                    }).catch(()=>{return res.json({ code: 200, imgurl: img_url });})
-                }).catch(()=>{return res.json({ code: 200, imgurl: img_url });})
-            }
-        } catch (err) {
-            return res.json({code: 404});
-        }
-        
-        
+        const { controlno }= req.body;
+        const year= await controlno.replace( /[^0-9]/g, "").substr(0, 4);
+        const temp_img_url1= await return_book_img("http://cover.nl.go.kr/kolis/" + year + "/" + controlno +  "_thumbnail.jpg");
+        const temp_img_url2=  await return_book_img("http://cover.nl.go.kr/kolis/" + year + "/" + controlno +  "01_thumbnail.jpg");
+        const imgurl= await (temp_img_url1 || temp_img_url2 || process.env.default_img_url);
+        return res.json({ code: 200, imgurl });
     } catch (err) {
         logger.info(err);
         return res.json({ code: 500, message:'서버 에러'});

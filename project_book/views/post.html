@@ -52,19 +52,8 @@
                     const title=item.title_info._cdata;
                     const author= item.author_info._cdata;
                     const kdc= item.kdc_code_1s._cdata;
-                    let isbn= null;
-                    if(item.isbn._cdata)
-                        isbn= item.isbn._cdata.split(" ")[0].replace(regex, "");
-            
-                    let img_url= '';
-                    try{
-                        const viewkey= item.detail_link._cdata.split(/\&|\=/)[1];
-                        const control_no= item.control_no._text;
-                        img_url= await promise_img_url(isbn, viewkey, control_no);
-                        //https://cover.nl.go.kr/kolis_on/2015/CNTS-00073919725_thumbnail.jpg 날짜 다르고 kolis_on임
-                        //https://cover.nl.go.kr/kolis/20091215/CNTS-00073919725_thumbnail.jpg 원래꺼
-                    } catch (err) { console.log(err); }
-                    
+                    const img_url= await promise_img_url(item.control_no._text);
+        
                     img.src= img_url;
                     img.style= "width:80px; height:100px;";
                     p1.textContent= title? title : "?";
@@ -95,9 +84,9 @@
             });
         }
 
-        const promise_img_url = function (isbn, viewkey, controlno) {
+        const promise_img_url = function (controlno) {
             return new Promise((resolve, reject) => {
-                axios.post('/book/search/image', { isbn, viewkey, controlno }).then((res)=>{
+                axios.post('/book/search/image', { controlno }).then((res)=>{
                 if(res.data.code==200) 
                     resolve(res.data.imgurl);
                 else 
