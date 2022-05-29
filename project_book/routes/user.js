@@ -22,7 +22,8 @@ router.post('/update/nick', isLogin, async (req, res, next)=>{
 
 router.post('/update/password', isLogin, async (req, res, next)=>{
     try {
-        if(bcrypt.compare(req.body.pass_now, req.user.password)==false) 
+        const match= await bcrypt.compare(req.body.pass_now, req.user.password);
+        if(match==false) 
             return res.json({ code: 500, message:'현재 비밀번호와 다릅니다'});
         if(req.body.password1!==req.body.password2)
             return res.json({ code: 500, message:'비밀번호를 다시 확인해주세요'});

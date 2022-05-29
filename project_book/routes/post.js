@@ -37,7 +37,7 @@ router.post('/update', isLogin, async (req, res, next)=>{
 
 router.post('/remove', isLogin, async (req, res, next)=>{
     try {
-        await Post.destroy({ where: { id: req.body.postid }});
+        await Post.destroy({ where: { id: req.body.id }});
         return res.json({ code: 200, message:'잘 삭제되었습니다' });
     } catch (err) {
         console.log(err);
@@ -48,7 +48,11 @@ router.post('/remove', isLogin, async (req, res, next)=>{
 router.post('/search/genre', async (req, res, next)=>{
     try {
         const { genre }= req.body;
-        const posts= await Post.findAll({ include: [{ model: Book, where: { kdc_code: { [Op.in] : [genre] }}}, { model: User }] });
+        const posts= await Post.findAll({ 
+            include: [{ model: Book, where: { kdc_code: [genre] }}, { model: User }],
+            //[Op.in] : [genre]와 같이 genre 배열에 값이 있으면 참임
+            order: [[ 'createdAt', 'DESC']]
+        });
         return res.render('main', { posts });
     } catch (err) {
         console.log(err);

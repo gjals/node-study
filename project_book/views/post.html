@@ -40,19 +40,16 @@
                 const result_list_div= document.getElementById('result_list');
                 result_list_div.innerHTML= await '';
                 const books_js= JSON.parse(books);
-                let count= 0;
-                for(let i=0; i<books_js.root.result.item.length; i++) {
-                    if(count==5) break; 
-                    const item= books_js.root.result.item[i];
+                for(let i=0; i<books_js.result.length; i++) {
+                    const item= books_js.result[i];
                     const div= document.createElement('div');
                     const img= document.createElement('img');
                     const p1= document.createElement('p');
                     const p2= document.createElement('p');
-                    const regex = /[^0-9]/g;				// 숫자가 아닌 문자열을 선택하는 정규식
-                    const title=item.title_info._cdata;
-                    const author= item.author_info._cdata;
-                    const kdc= item.kdc_code_1s._cdata;
-                    const img_url= await promise_img_url(item.control_no._text);
+                    const title=item.titleInfo.replaceAll(/<[^>]*>/g, "");
+                    const author= item.authorInfo;
+                    const kdc= item.kdcCode1s;
+                    const img_url= await promise_img_url(item.controlNo);
         
                     img.src= img_url;
                     img.style= "width:80px; height:100px;";
@@ -64,7 +61,6 @@
                     div.onclick= function () { selectBook(title, author, kdc, img_url)};
                     div.style= "cursor:pointer";
                     result_list_div.appendChild(div);
-                    count++;
                 }
             })
         });

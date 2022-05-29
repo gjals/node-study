@@ -25,8 +25,10 @@ router.post('/register', isLogin, async (req, res, next) => {
 router.post('/search', isLogin, async (req, res, next)=>{
     try {
         const text= encodeURIComponent(req.body.search_text);
-        const url= "https://www.nl.go.kr/NL/search/openApi/search.do?key=" + process.env.libraryKey + "&apiType=xml&pageNum=1&pageSize=20&category=%EB%8F%84%EC%84%9C&kwd=" + text;
+        const url= "https://www.nl.go.kr/NL/search/openApi/search.do?key=" + process.env.libraryKey + "&apiType=json&pageNum=1&pageSize=5&category=%EB%8F%84%EC%84%9C&kwd=" + text;
+        //api type은 json타입으로, 한 쪽, 10개를 가져오고 카테고리는 도서, 검색어는 text를 입력 변수로 줌
         const socket= req.app.get('io').of('/post').to(req.sessionID);
+        //새로고침 없이 데이터를 바로바로 띄우기 위해 소켓 사용함
         request.get(url, async (err, res, body) =>{
             if(err) {
                 logger.info(`err => ${err}`);
@@ -34,9 +36,8 @@ router.post('/search', isLogin, async (req, res, next)=>{
             }
             else {
                 if(res.statusCode == 200) {
-                    const xml= await body;
-                    const xmlToJson= await convert.xml2json(xml, {compact: true, spaces: 2});
-                    await socket.emit('search_books', xmlToJson);
+                    const jsondata= await body;
+                    await socket.emit('search_books', jsondata);
                 }
             }
         });
